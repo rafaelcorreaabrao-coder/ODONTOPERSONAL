@@ -38,8 +38,8 @@ export default function Auth() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif" }}>
-      <Card style={{ width: 360 }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif", padding: 16 }}>
+      <Card style={{ width: "100%", maxWidth: 360 }}>
         <div style={{ textAlign: "center", marginBottom: 18 }}>
           <svg width="38" height="38" viewBox="0 0 40 40" fill="none" style={{ margin: "0 auto 6px" }}>
             <path
@@ -48,7 +48,7 @@ export default function Auth() {
             />
             <ellipse cx="14.5" cy="12.5" rx="3" ry="4.6" fill="rgba(255,255,255,0.4)" transform="rotate(-22 14.5 12.5)" />
           </svg>
-          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 22, color: t.text }}>Arco</div>
+          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 22, color: t.text }}>OdontoPersonal</div>
           <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>controle financeiro para dentistas autônomas</div>
         </div>
 

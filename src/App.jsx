@@ -125,22 +125,22 @@ export default function App() {
 
   return (
     <ThemeCtx.Provider value={t}>
-      <div style={{ display: "flex", minHeight: "100vh", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif", color: t.text }}>
-        <aside style={{ width: 224, background: t.sidebar, borderRight: `1px solid ${t.sidebarBorder}`, padding: "22px 14px", display: "flex", flexDirection: "column", gap: 26, flexShrink: 0 }}>
-          <div style={{ paddingLeft: 6 }}>
+      <div className="app-shell" style={{ display: "flex", minHeight: "100vh", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif", color: t.text }}>
+        <aside className="app-sidebar" style={{ width: 224, background: t.sidebar, borderRight: `1px solid ${t.sidebarBorder}`, padding: "22px 14px", display: "flex", flexDirection: "column", gap: 26, flexShrink: 0 }}>
+          <div className="app-sidebar-brand" style={{ paddingLeft: 6 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <ArcoLogo color={t.sidebarIcon} />
               <div>
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 17, color: t.sidebarActiveText, letterSpacing: "-0.01em" }}>Arco</div>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 15, color: t.sidebarActiveText, letterSpacing: "-0.01em" }}>OdontoPersonal</div>
                 <div style={{ fontSize: 10.5, color: t.sidebarTextDim }}>{profile?.nickname || "..."}</div>
               </div>
             </div>
-            <div style={{ marginTop: 8, marginLeft: 2 }}>
+            <div className="app-sidebar-smile" style={{ marginTop: 8, marginLeft: 2 }}>
               <SmileArc color={t.gold} />
             </div>
           </div>
 
-          <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <nav className="app-sidebar-nav" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {NAV.map((item) => {
               const Icon = item.icon;
               const active = view === item.id;
@@ -155,13 +155,13 @@ export default function App() {
                   }}
                 >
                   <Icon size={16} strokeWidth={2} style={{ flexShrink: 0, opacity: active ? 1 : 0.8 }} />
-                  {item.label}
+                  <span className="nav-label">{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="app-sidebar-bottom" style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
             <ThemeSwitcher current={themeMode} onSelect={setTheme} t={t} />
 
             <button
@@ -177,7 +177,7 @@ export default function App() {
           </div>
         </aside>
 
-        <main style={{ flex: 1, padding: "26px 30px", minWidth: 0 }}>
+        <main className="app-main" style={{ flex: 1, padding: "26px 30px", minWidth: 0 }}>
           {view === "dashboard" && <Dashboard clinicas={clinicas} lancamentos={lancamentos} />}
           {view === "clinicas" && <Clinicas userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
           {view === "lancamentos" && <Lancamentos userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}

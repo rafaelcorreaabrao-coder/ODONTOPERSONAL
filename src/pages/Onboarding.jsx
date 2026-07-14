@@ -34,8 +34,8 @@ export default function Onboarding({ userId, onDone }) {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif" }}>
-      <Card style={{ width: 380 }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif", padding: 16 }}>
+      <Card style={{ width: "100%", maxWidth: 380 }}>
         <div style={{ marginBottom: 18 }}>
           <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 20, color: t.text }}>
             Vamos criar sua loja
