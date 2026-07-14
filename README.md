@@ -63,6 +63,24 @@ Todo o código está organizado em `src/`:
 
 Qualquer ajuste de texto, cor ou comportamento, é só pedir.
 
+## Instalando como app no celular
+
+O site agora funciona como PWA (Progressive Web App) — ou seja, dá para "instalar" no celular como se fosse um app de verdade, com ícone na tela inicial e abrindo em tela cheia, sem precisar passar pela App Store ou Play Store.
+
+**No iPhone (Safari):**
+1. Abra o link do site no Safari (precisa ser Safari, não funciona pelo Chrome no iOS)
+2. Toque no ícone de compartilhar (o quadrado com a seta pra cima)
+3. Role e toque em **"Adicionar à Tela de Início"**
+4. Confirme — o ícone do dente aparece na tela inicial, igual um app
+
+**No Android (Chrome):**
+1. Abra o link do site no Chrome
+2. Toque nos três pontinhos no canto superior direito
+3. Toque em **"Adicionar à tela inicial"** ou **"Instalar app"** (o texto varia um pouco por versão)
+4. Confirme
+
+Depois de instalado, abre direto pelo ícone, sem barra de endereço, com a mesma sensação de um app nativo — e continua puxando os dados do mesmo banco de dados de sempre.
+
 ## Evoluindo depois
 
 Quando quiser migrar para login por celular com código SMS (mais parecido com apps bancários), dá para adicionar depois sem perder os dados já cadastrados — é só um ajuste na tela de login, mantendo o resto do app igual.
