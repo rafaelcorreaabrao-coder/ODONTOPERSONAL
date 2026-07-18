@@ -12,6 +12,13 @@ Tempo estimado: 15-20 minutos na primeira vez. Não precisa de nenhum serviço p
 
 > **Já tinha criado o banco antes?** Rode também o arquivo `supabase/migration_dia_pagamento.sql` no SQL Editor — ele adiciona as colunas novas usadas para calcular automaticamente a data prevista de pagamento. Se está criando o banco pela primeira vez, pode ignorar esse arquivo (o `schema.sql` já vem completo).
 
+> **Painel CEO (novo):** rode também `supabase/migration_admin_subscriptions.sql` no SQL Editor. Ele cria o sistema de assinaturas e a permissão de administrador. **Depois de rodar**, é preciso um último passo manual pra você virar o CEO: no final desse mesmo arquivo tem uma linha comentada (começando com `--`), tipo:
+> ```sql
+> update public.profiles set is_admin = true
+> where id = (select id from auth.users where email = 'seuemail@exemplo.com');
+> ```
+> Copie essa linha à parte, tire o `--` do início, troque pelo seu e-mail de cadastro, e rode sozinha no SQL Editor. Só você deve fazer isso — quem mais criar conta continua como usuária comum.
+
 O login por e-mail e senha já vem ativado por padrão no Supabase — não precisa configurar nada a mais aqui.
 
 **Dica para testes**: por padrão, o Supabase exige que a pessoa confirme o e-mail antes de conseguir entrar (clicando num link que chega na caixa de entrada). Para agilizar os testes com sua esposa, você pode desativar isso temporariamente em **Authentication → Providers → Email → "Confirm email"** (desmarque a opção). Assim ela cria a conta e já entra direto, sem precisar checar o e-mail. Vale reativar depois, quando for para uso real.

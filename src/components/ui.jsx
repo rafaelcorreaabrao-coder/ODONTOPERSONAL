@@ -15,7 +15,34 @@ export function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+export const CLINIC_COLORS = ["#0E6E68", "#7C5CFC", "#F2994A", "#2F80ED", "#EB5B8C", "#1FAE7A"];
 export const DIAS_SEMANA = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+
+export function clinicColor(index) {
+  return CLINIC_COLORS[index % CLINIC_COLORS.length];
+}
+
+export function ClinicAvatar({ nome, color, size = 36 }) {
+  const initial = (nome || "?").trim().charAt(0).toUpperCase();
+  return (
+    <div
+      style={{
+        width: size, height: size, borderRadius: "50%", background: color, color: "#fff",
+        display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700,
+        fontSize: size * 0.42, flexShrink: 0, fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
+      {initial}
+    </div>
+  );
+}
+
+export function greetingNow() {
+  const h = new Date().getHours();
+  if (h < 12) return "Bom dia";
+  if (h < 18) return "Boa tarde";
+  return "Boa noite";
+}
 
 export function nextPaymentDate(clinic, atendimentoISO) {
   if (!clinic || !atendimentoISO) return atendimentoISO;
@@ -186,45 +213,49 @@ export function Card({ children, style = {} }) {
   );
 }
 
-export function PageHeader({ title, subtitle }) {
+export function PageHeader({ title, subtitle, icon: Icon }) {
   const t = useTheme();
   return (
-    <div style={{ marginBottom: 22 }}>
-      <h1
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 600,
-          fontSize: 23,
-          margin: 0,
-          color: t.text,
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {title}
-      </h1>
-      {subtitle && <p style={{ margin: "5px 0 0", fontSize: 13.5, color: t.textMuted }}>{subtitle}</p>}
+    <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 24 }}>
+      {Icon && (
+        <div style={{ width: 44, height: 44, borderRadius: 12, background: t.successSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Icon size={21} color={t.primary} strokeWidth={2} />
+        </div>
+      )}
+      <div>
+        <h1
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 800,
+            fontSize: 23,
+            margin: 0,
+            color: t.text,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          {title}
+        </h1>
+        {subtitle && <p style={{ margin: "5px 0 0", fontSize: 13.5, color: t.textMuted }}>{subtitle}</p>}
+      </div>
     </div>
   );
 }
 
-export function MetricCard({ label, value, tone = "default" }) {
+export function MetricCard({ label, value, tone = "default", icon: Icon }) {
   const t = useTheme();
-  const toneColor = tone === "danger" ? t.danger : tone === "accent" ? t.gold : t.text;
+  const toneColor = tone === "danger" ? t.danger : tone === "accent" ? t.gold : tone === "success" ? t.success : t.text;
+  const toneSoft = tone === "danger" ? t.dangerSoft : tone === "accent" ? t.goldSoft : tone === "success" ? t.successSoft : t.surfaceSunken;
   return (
-    <Card style={{ flex: 1, minWidth: 160 }}>
-      <div
-        style={{
-          fontSize: 12,
-          color: t.textMuted,
-          fontWeight: 600,
-          marginBottom: 9,
-          textTransform: "uppercase",
-          letterSpacing: "0.04em",
-        }}
-      >
-        {label}
+    <Card style={{ flex: 1, minWidth: 170 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        {Icon && (
+          <div style={{ width: 32, height: 32, borderRadius: 9, background: toneSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Icon size={16} color={toneColor} strokeWidth={2.2} />
+          </div>
+        )}
+        <div style={{ fontSize: 12.5, color: t.textMuted, fontWeight: 500 }}>{label}</div>
       </div>
-      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 21, fontWeight: 500, color: toneColor }}>{value}</div>
+      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 23, fontWeight: 700, color: toneColor }}>{value}</div>
     </Card>
   );
 }

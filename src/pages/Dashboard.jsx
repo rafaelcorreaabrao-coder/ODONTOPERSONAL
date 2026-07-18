@@ -1,8 +1,21 @@
 import { useMemo } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { Wallet, AlertTriangle, ListChecks } from "lucide-react";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, MetricCard, formatCurrency, formatDate, effectiveStatus } from "../components/ui.jsx";
+import { Card, PageHeader, ClinicAvatar, clinicColor, greetingNow, formatCurrency, formatDate, effectiveStatus } from "../components/ui.jsx";
 
-export default function Dashboard({ clinicas, lancamentos }) {
+function DonutTooltip({ active, payload, t }) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0];
+  return (
+    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: t.shadow }}>
+      <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{p.name}</div>
+      <div style={{ fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", color: p.payload.fill }}>{formatCurrency(p.value)}</div>
+    </div>
+  );
+}
+
+export default function Dashboard({ clinicas, lancamentos, nickname }) {
   const t = useTheme();
 
   const metrics = useMemo(() => {
@@ -18,17 +31,21 @@ export default function Dashboard({ clinicas, lancamentos }) {
   }, [lancamentos]);
 
   const porClinica = useMemo(() => {
-    return clinicas.map((c) => {
+    return clinicas.map((c, i) => {
       const items = lancamentos.filter((l) => l.clinica_id === c.id);
       const total = items.reduce((s, l) => s + (Number(l.valor) || 0), 0);
       const recebido = items.filter((l) => effectiveStatus(l) === "Pago").reduce((s, l) => s + (Number(l.valor) || 0), 0);
       const aReceber = items.filter((l) => effectiveStatus(l) === "A receber").reduce((s, l) => s + (Number(l.valor) || 0), 0);
       const atrasado = items.filter((l) => effectiveStatus(l) === "Atrasado").reduce((s, l) => s + (Number(l.valor) || 0), 0);
-      return { clinica: c, total, recebido, aReceber, atrasado, count: items.length };
+      return { clinica: c, total, recebido, aReceber, atrasado, count: items.length, color: clinicColor(i) };
     });
   }, [clinicas, lancamentos]);
 
-  const maxTotal = Math.max(1, ...porClinica.map((p) => p.total));
+  const donutData = useMemo(
+    () => porClinica.filter((p) => p.total > 0).map((p) => ({ name: p.clinica.nome, value: p.total, fill: p.color })),
+    [porClinica]
+  );
+
   const atrasados = lancamentos
     .filter((l) => effectiveStatus(l) === "Atrasado")
     .sort((a, b) => (a.data_prevista < b.data_prevista ? -1 : 1));
@@ -43,37 +60,94 @@ export default function Dashboard({ clinicas, lancamentos }) {
     { recebido: 0, aReceber: 0, atrasado: 0, total: 0 }
   );
 
-  const th = { textAlign: "right", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" };
-  const td = { textAlign: "right", fontSize: 13.5, fontFamily: "'IBM Plex Mono', monospace", padding: "10px 0" };
-
   return (
     <div>
-      <PageHeader title="Dashboard" subtitle="Visão geral de tudo que você tem a receber, já recebeu e está em atraso." />
+      <div
+        style={{
+          background: `linear-gradient(135deg, ${t.primary}, ${t.accentText})`,
+          borderRadius: 22,
+          padding: "28px 30px",
+          color: "#fff",
+          marginBottom: 20,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute", top: -60, right: -40, width: 220, height: 220, borderRadius: "50%",
+            background: "rgba(255,255,255,0.08)", pointerEvents: "none",
+          }}
+        />
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.8)", marginBottom: 2 }}>{greetingNow()}{nickname ? "," : ""}</div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 18 }}>
+            {nickname || "Dashboard"} 👋
+          </div>
 
-      <div style={{ display: "flex", gap: 14, marginBottom: 22, flexWrap: "wrap" }}>
-        <MetricCard label="Recebido" value={formatCurrency(metrics.recebido)} />
-        <MetricCard label="A receber" value={formatCurrency(metrics.aReceber)} tone="accent" />
-        <MetricCard label="Atrasado" value={formatCurrency(metrics.atrasado)} tone="danger" />
-        <MetricCard label="Lançamentos atrasados" value={String(metrics.nAtrasado)} tone="danger" />
+          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
+            Total a receber
+          </div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 38, marginBottom: 20 }}>
+            {formatCurrency(metrics.aReceber + metrics.atrasado)}
+          </div>
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div style={{ background: "rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+              <Wallet size={16} color="#fff" />
+              <div>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.8)" }}>Recebido</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5 }}>{formatCurrency(metrics.recebido)}</div>
+              </div>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+              <AlertTriangle size={16} color="#FFD9CC" />
+              <div>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.8)" }}>Atrasado</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5 }}>{formatCurrency(metrics.atrasado)}</div>
+              </div>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+              <ListChecks size={16} color="#fff" />
+              <div>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.8)" }}>Lançamentos atrasados</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5 }}>{metrics.nAtrasado}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "flex-start" }}>
         <Card style={{ flex: "1 1 340px" }}>
           <div style={{ fontWeight: 600, marginBottom: 14, fontSize: 14.5 }}>Por clínica</div>
-          {porClinica.length === 0 && <div style={{ fontSize: 13.5, color: t.textMuted }}>Cadastre uma clínica para ver o comparativo aqui.</div>}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {porClinica.map((p) => (
-              <div key={p.clinica.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
-                  <span style={{ fontWeight: 600 }}>{p.clinica.nome}</span>
-                  <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: t.textMuted }}>{formatCurrency(p.total)}</span>
-                </div>
-                <div style={{ height: 7, borderRadius: 999, background: t.surfaceSunken, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.max(4, (p.total / maxTotal) * 100)}%`, background: p.atrasado > 0 ? t.danger : t.accentText, borderRadius: 999 }} />
-                </div>
+          {porClinica.length === 0 ? (
+            <div style={{ fontSize: 13.5, color: t.textMuted }}>Cadastre uma clínica para ver o comparativo aqui.</div>
+          ) : (
+            <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+              <div style={{ width: 140, height: 140, flexShrink: 0 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={donutData} dataKey="value" nameKey="name" innerRadius={42} outerRadius={64} paddingAngle={donutData.length > 1 ? 3 : 0} strokeWidth={0}>
+                      {donutData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                    </Pie>
+                    <Tooltip content={<DonutTooltip t={t} />} />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
+              <div style={{ flex: "1 1 160px", display: "flex", flexDirection: "column", gap: 10 }}>
+                {porClinica.map((p) => (
+                  <div key={p.clinica.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <ClinicAvatar nome={p.clinica.nome} color={p.color} size={28} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.clinica.nome}</div>
+                    </div>
+                    <div style={{ fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", color: t.textMuted, whiteSpace: "nowrap" }}>{formatCurrency(p.total)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </Card>
 
         <Card style={{ flex: "1 1 300px" }}>
@@ -81,14 +155,16 @@ export default function Dashboard({ clinicas, lancamentos }) {
           {atrasados.length === 0 && <div style={{ fontSize: 13.5, color: t.textMuted }}>Nada atrasado por aqui.</div>}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {atrasados.slice(0, 6).map((l) => {
-              const c = clinicas.find((c) => c.id === l.clinica_id);
+              const idx = clinicas.findIndex((c) => c.id === l.clinica_id);
+              const c = clinicas[idx];
               return (
-                <div key={l.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, borderBottom: `1px solid ${t.border}`, paddingBottom: 8 }}>
-                  <div>
-                    <div style={{ fontWeight: 600 }}>{c ? c.nome : "Clínica removida"}</div>
-                    <div style={{ color: t.textMuted, fontSize: 12 }}>previsto {formatDate(l.data_prevista)}</div>
+                <div key={l.id} style={{ display: "flex", alignItems: "center", gap: 10, borderBottom: `1px solid ${t.border}`, paddingBottom: 8 }}>
+                  <ClinicAvatar nome={c ? c.nome : "?"} color={idx >= 0 ? clinicColor(idx) : t.textMuted} size={26} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{c ? c.nome : "Clínica removida"}</div>
+                    <div style={{ color: t.textMuted, fontSize: 11.5 }}>previsto {formatDate(l.data_prevista)}</div>
                   </div>
-                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: t.danger, fontWeight: 500 }}>{formatCurrency(l.valor)}</div>
+                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: t.danger, fontWeight: 700, fontSize: 13.5 }}>{formatCurrency(l.valor)}</div>
                 </div>
               );
             })}
@@ -105,41 +181,54 @@ export default function Dashboard({ clinicas, lancamentos }) {
           {porClinica.length === 0 ? (
             <div style={{ fontSize: 13.5, color: t.textMuted }}>Cadastre uma clínica para ver o resumo aqui.</div>
           ) : (
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                    <th style={{ textAlign: "left", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" }}>Clínica</th>
-                    <th style={th}>Recebido</th>
-                    <th style={th}>A receber</th>
-                    <th style={th}>Atrasado</th>
-                    <th style={th}>Total previsto</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {porClinica.map((p) => (
-                    <tr key={p.clinica.id} style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td style={{ padding: "10px 0", fontSize: 13.5, fontWeight: 600 }}>
-                        {p.clinica.nome}
-                        <span style={{ fontWeight: 400, color: t.textMuted, fontSize: 12 }}>{"  ·  "}{p.count} lançamento{p.count === 1 ? "" : "s"}</span>
-                      </td>
-                      <td style={{ ...td, color: t.success }}>{formatCurrency(p.recebido)}</td>
-                      <td style={{ ...td, color: t.gold }}>{formatCurrency(p.aReceber)}</td>
-                      <td style={{ ...td, color: p.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(p.atrasado)}</td>
-                      <td style={{ ...td, fontWeight: 500 }}>{formatCurrency(p.total)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td style={{ padding: "12px 0 0", fontSize: 13.5, fontWeight: 600 }}>Total geral</td>
-                    <td style={{ ...td, padding: "12px 0 0", color: t.success, fontWeight: 600 }}>{formatCurrency(totals.recebido)}</td>
-                    <td style={{ ...td, padding: "12px 0 0", color: t.gold, fontWeight: 600 }}>{formatCurrency(totals.aReceber)}</td>
-                    <td style={{ ...td, padding: "12px 0 0", color: totals.atrasado > 0 ? t.danger : t.textMuted, fontWeight: 600 }}>{formatCurrency(totals.atrasado)}</td>
-                    <td style={{ ...td, padding: "12px 0 0", fontWeight: 600 }}>{formatCurrency(totals.total)}</td>
-                  </tr>
-                </tfoot>
-              </table>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {porClinica.map((p) => (
+                <div
+                  key={p.clinica.id}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap",
+                    padding: "14px 16px", borderRadius: 12, background: t.surfaceSunken,
+                  }}
+                >
+                  <ClinicAvatar nome={p.clinica.nome} color={p.color} size={34} />
+                  <div style={{ flex: "1 1 140px", minWidth: 120 }}>
+                    <div style={{ fontWeight: 700, fontSize: 14 }}>{p.clinica.nome}</div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>{p.count} lançamento{p.count === 1 ? "" : "s"}</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
+                    <div>
+                      <div style={{ fontSize: 11.5, color: t.textMuted }}>Recebido</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.success }}>{formatCurrency(p.recebido)}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11.5, color: t.textMuted }}>A receber</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.gold }}>{formatCurrency(p.aReceber)}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11.5, color: t.textMuted }}>Atrasado</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: p.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(p.atrasado)}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 12, border: `1.5px solid ${t.border}`, marginTop: 4 }}>
+                <div style={{ flex: "1 1 140px", fontWeight: 700, fontSize: 14 }}>Total geral</div>
+                <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
+                  <div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>Recebido</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.success }}>{formatCurrency(totals.recebido)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>A receber</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.gold }}>{formatCurrency(totals.aReceber)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>Atrasado</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: totals.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(totals.atrasado)}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </Card>
