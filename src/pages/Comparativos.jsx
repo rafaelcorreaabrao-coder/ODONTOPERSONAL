@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import { useTheme } from "../theme.js";
+import { BarChart3 } from "lucide-react";
 import { Card, PageHeader, formatCurrency } from "../components/ui.jsx";
 
 const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
@@ -54,7 +55,7 @@ export default function Comparativos({ lancamentos }) {
   if (pagos.length === 0) {
     return (
       <div>
-        <PageHeader title="Comparativos" subtitle="Receita mês a mês e por dia da semana." />
+        <PageHeader title="Comparativos" subtitle="Receita mês a mês e por dia da semana." icon={BarChart3} />
         <Card>
           <div style={{ fontSize: 14, color: t.textMuted }}>
             Ainda não há lançamentos marcados como pagos. Assim que você marcar alguns pagamentos como recebidos, os gráficos aparecem aqui.
@@ -66,7 +67,7 @@ export default function Comparativos({ lancamentos }) {
 
   return (
     <div>
-      <PageHeader title="Comparativos" subtitle="Receita mês a mês e por dia da semana (só considera lançamentos já pagos)." />
+      <PageHeader title="Comparativos" subtitle="Receita mês a mês e por dia da semana (só considera lançamentos já pagos)." icon={BarChart3} />
 
       <Card style={{ marginBottom: 18 }}>
         <div style={{ fontWeight: 600, marginBottom: 4, fontSize: 14.5 }}>Receita por mês</div>

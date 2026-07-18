@@ -213,23 +213,30 @@ export function Card({ children, style = {} }) {
   );
 }
 
-export function PageHeader({ title, subtitle }) {
+export function PageHeader({ title, subtitle, icon: Icon }) {
   const t = useTheme();
   return (
-    <div style={{ marginBottom: 22 }}>
-      <h1
-        style={{
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-          fontWeight: 600,
-          fontSize: 23,
-          margin: 0,
-          color: t.text,
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {title}
-      </h1>
-      {subtitle && <p style={{ margin: "5px 0 0", fontSize: 13.5, color: t.textMuted }}>{subtitle}</p>}
+    <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 24 }}>
+      {Icon && (
+        <div style={{ width: 44, height: 44, borderRadius: 12, background: t.successSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Icon size={21} color={t.primary} strokeWidth={2} />
+        </div>
+      )}
+      <div>
+        <h1
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 800,
+            fontSize: 23,
+            margin: 0,
+            color: t.text,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          {title}
+        </h1>
+        {subtitle && <p style={{ margin: "5px 0 0", fontSize: 13.5, color: t.textMuted }}>{subtitle}</p>}
+      </div>
     </div>
   );
 }

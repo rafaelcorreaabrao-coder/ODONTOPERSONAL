@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ArrowRight, CheckCircle2, XCircle, MinusCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, XCircle, MinusCircle, Scale } from "lucide-react";
 import { useTheme } from "../theme.js";
 import { Card, PageHeader, Field, useInputStyle, formatCurrency } from "../components/ui.jsx";
 
@@ -67,7 +67,7 @@ export default function Calculadora() {
 
   return (
     <div>
-      <PageHeader title="Vale a pena trocar?" subtitle="Compare fria e calculadamente a clínica atual com uma nova proposta." />
+      <PageHeader title="Vale a pena trocar?" subtitle="Compare fria e calculadamente a clínica atual com uma nova proposta." icon={Scale} />
 
       <div style={{ display: "flex", gap: 18, flexWrap: "wrap", marginBottom: 18, alignItems: "stretch" }}>
         <ScenarioForm title="Clínica atual" data={atual} setData={setAtual} inputStyle={inputStyle} />

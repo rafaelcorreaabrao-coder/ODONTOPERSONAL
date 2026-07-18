@@ -68,7 +68,7 @@ export default function Admin() {
 
   return (
     <div>
-      <PageHeader title="Painel CEO" subtitle="Gerencie o status de assinatura de cada usuária." />
+      <PageHeader title="Painel CEO" subtitle="Gerencie o status de assinatura de cada usuária." icon={ShieldCheck} />
 
       {error && (
         <Card style={{ marginBottom: 16 }}>

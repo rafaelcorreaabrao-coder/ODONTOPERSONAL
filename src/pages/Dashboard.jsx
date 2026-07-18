@@ -60,9 +60,6 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
     { recebido: 0, aReceber: 0, atrasado: 0, total: 0 }
   );
 
-  const th = { textAlign: "right", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" };
-  const td = { textAlign: "right", fontSize: 13.5, fontFamily: "'Plus Jakarta Sans', sans-serif", padding: "10px 0" };
-
   return (
     <div>
       <div style={{ marginBottom: 22 }}>
@@ -142,44 +139,54 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
           {porClinica.length === 0 ? (
             <div style={{ fontSize: 13.5, color: t.textMuted }}>Cadastre uma clínica para ver o resumo aqui.</div>
           ) : (
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                    <th style={{ textAlign: "left", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" }}>Clínica</th>
-                    <th style={th}>Recebido</th>
-                    <th style={th}>A receber</th>
-                    <th style={th}>Atrasado</th>
-                    <th style={th}>Total previsto</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {porClinica.map((p) => (
-                    <tr key={p.clinica.id} style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td style={{ padding: "10px 0", fontSize: 13.5, fontWeight: 600 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <ClinicAvatar nome={p.clinica.nome} color={p.color} size={22} />
-                          {p.clinica.nome}
-                          <span style={{ fontWeight: 400, color: t.textMuted, fontSize: 12 }}>{p.count} lançamento{p.count === 1 ? "" : "s"}</span>
-                        </div>
-                      </td>
-                      <td style={{ ...td, color: t.success }}>{formatCurrency(p.recebido)}</td>
-                      <td style={{ ...td, color: t.gold }}>{formatCurrency(p.aReceber)}</td>
-                      <td style={{ ...td, color: p.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(p.atrasado)}</td>
-                      <td style={{ ...td, fontWeight: 500 }}>{formatCurrency(p.total)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td style={{ padding: "12px 0 0", fontSize: 13.5, fontWeight: 600 }}>Total geral</td>
-                    <td style={{ ...td, padding: "12px 0 0", color: t.success, fontWeight: 600 }}>{formatCurrency(totals.recebido)}</td>
-                    <td style={{ ...td, padding: "12px 0 0", color: t.gold, fontWeight: 600 }}>{formatCurrency(totals.aReceber)}</td>
-                    <td style={{ ...td, padding: "12px 0 0", color: totals.atrasado > 0 ? t.danger : t.textMuted, fontWeight: 600 }}>{formatCurrency(totals.atrasado)}</td>
-                    <td style={{ ...td, padding: "12px 0 0", fontWeight: 600 }}>{formatCurrency(totals.total)}</td>
-                  </tr>
-                </tfoot>
-              </table>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {porClinica.map((p) => (
+                <div
+                  key={p.clinica.id}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap",
+                    padding: "14px 16px", borderRadius: 12, background: t.surfaceSunken,
+                  }}
+                >
+                  <ClinicAvatar nome={p.clinica.nome} color={p.color} size={34} />
+                  <div style={{ flex: "1 1 140px", minWidth: 120 }}>
+                    <div style={{ fontWeight: 700, fontSize: 14 }}>{p.clinica.nome}</div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>{p.count} lançamento{p.count === 1 ? "" : "s"}</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
+                    <div>
+                      <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.03em" }}>Recebido</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.success }}>{formatCurrency(p.recebido)}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.03em" }}>A receber</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.gold }}>{formatCurrency(p.aReceber)}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.03em" }}>Atrasado</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: p.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(p.atrasado)}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 12, border: `1.5px solid ${t.border}`, marginTop: 4 }}>
+                <div style={{ flex: "1 1 140px", fontWeight: 700, fontSize: 14 }}>Total geral</div>
+                <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
+                  <div>
+                    <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase" }}>Recebido</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.success }}>{formatCurrency(totals.recebido)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase" }}>A receber</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.gold }}>{formatCurrency(totals.aReceber)}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase" }}>Atrasado</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: totals.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(totals.atrasado)}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </Card>

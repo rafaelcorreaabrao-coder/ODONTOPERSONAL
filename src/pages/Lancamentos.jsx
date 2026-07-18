@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Check, X, Receipt } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
 import { Card, PageHeader, Field, Button, Badge, useInputStyle, formatCurrency, formatDate, todayISO, effectiveStatus, nextPaymentDate, ClinicAvatar, clinicColor } from "../components/ui.jsx";
@@ -83,7 +83,7 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged }
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 22, flexWrap: "wrap", gap: 10 }}>
-        <PageHeader title="Lançamentos" subtitle="Cada atendimento e o que falta receber por ele." />
+        <PageHeader title="Lançamentos" subtitle="Cada atendimento e o que falta receber por ele." icon={Receipt} />
         {!form && (
           <Button onClick={() => setForm(blank())} disabled={clinicas.length === 0} icon={<Plus size={15} />}>Novo lançamento</Button>
         )}

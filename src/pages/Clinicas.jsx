@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Check, X, Building2 } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
 import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA, describePagamento, ClinicAvatar, clinicColor } from "../components/ui.jsx";
@@ -65,7 +65,7 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged }) {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 22 }}>
-        <PageHeader title="Clínicas" subtitle="Onde você atende e como cada uma paga." />
+        <PageHeader title="Clínicas" subtitle="Onde você atende e como cada uma paga." icon={Building2} />
         {!form && <Button onClick={startNew} icon={<Plus size={15} />}>Nova clínica</Button>}
       </div>
 

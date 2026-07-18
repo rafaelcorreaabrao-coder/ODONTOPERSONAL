@@ -22,6 +22,7 @@ const ANIM_CSS = `
 .op-fade-up { opacity: 0; animation: fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; }
 .op-fade-in { opacity: 0; animation: fadeIn .8s ease forwards; }
 .op-float { animation: floatCard 5.5s ease-in-out infinite; }
+@media (max-width: 720px) { .op-nav-link { display: none !important; } }
 `;
 
 /* Revela o conteúdo com fade + deslize, na primeira vez que entra na tela ao rolar */
@@ -124,48 +125,69 @@ export default function Landing({ onGoLogin, onGoSignup }) {
     <div style={{ minHeight: "100vh", background: t.page, color: t.text, overflowX: "hidden" }}>
       <style>{ANIM_CSS}</style>
 
-      {/* Top nav */}
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", maxWidth: 1160, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <ArcoLogo color={t.primary} />
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18 }}>OdontoPersonal</span>
+      {/* Top nav — barra cheia colorida */}
+      <header style={{ background: t.primary, position: "sticky", top: 0, zIndex: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <ArcoLogo color="#fff" />
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, color: "#fff" }}>OdontoPersonal</span>
+          </div>
+          <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
+            <a href="#como-funciona" className="op-nav-link" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Como funciona</a>
+            <a href="#funcionalidades" className="op-nav-link" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Funcionalidades</a>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={onGoLogin} style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.5)", color: "#fff", fontSize: 13.5, fontWeight: 700, padding: "8px 16px", borderRadius: 8, cursor: "pointer" }}>
+                Entrar
+              </button>
+              <button onClick={onGoSignup} style={{ background: "#fff", border: "none", color: t.primary, fontSize: 13.5, fontWeight: 700, padding: "8px 16px", borderRadius: 8, cursor: "pointer" }}>
+                Criar conta grátis
+              </button>
+            </div>
+          </nav>
         </div>
-        <button onClick={onGoLogin} style={{ background: "none", border: "none", color: t.textMuted, fontSize: 14, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
-          Entrar →
-        </button>
       </header>
 
-      {/* Hero */}
-      <section style={{ maxWidth: 1160, margin: "0 auto", padding: "48px 24px 80px", display: "flex", gap: 40, alignItems: "center", flexWrap: "wrap" }}>
-        <div style={{ flex: "1 1 420px", minWidth: 300 }}>
-          <div className="op-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, background: t.goldSoft, color: t.gold, fontSize: 12, fontWeight: 700, marginBottom: 22, letterSpacing: "0.03em", animationDelay: "0s" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.gold, display: "inline-block" }} />
-            GRÁTIS PARA TESTAR · SEM CARTÃO
-          </div>
-          <h1
-            className="op-fade-up"
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: "clamp(34px, 5vw, 50px)",
-              lineHeight: 1.08, margin: "0 0 20px", letterSpacing: "-0.02em", animationDelay: "0.08s",
-            }}
-          >
-            Menos planilha.<br />Mais controle.
-          </h1>
-          <p className="op-fade-up" style={{ fontSize: 16.5, color: t.textMuted, lineHeight: 1.6, marginBottom: 30, maxWidth: 440, animationDelay: "0.16s" }}>
-            O sistema feito para dentistas autônomas que atendem em várias clínicas. Cada uma com o próprio prazo de pagamento — tudo organizado numa tela só.
-          </p>
-          <div className="op-fade-up" style={{ display: "flex", gap: 12, flexWrap: "wrap", animationDelay: "0.24s" }}>
-            <Button onClick={onGoSignup} style={{ padding: "13px 24px", fontSize: 14.5, borderRadius: 10 }}>Criar conta grátis →</Button>
-            <Button variant="ghost" onClick={onGoLogin} style={{ padding: "13px 24px", fontSize: 14.5, borderRadius: 10 }}>Já tenho conta</Button>
-          </div>
-          <div className="op-fade-up" style={{ fontSize: 12.5, color: t.textMuted, marginTop: 14, animationDelay: "0.3s" }}>
-            Leva menos de 2 minutos para cadastrar sua primeira clínica.
+      {/* Hero — foto full-bleed com overlay escuro */}
+      <section style={{ position: "relative", minHeight: 520, display: "flex", alignItems: "stretch", overflow: "hidden" }}>
+        <img
+          src="/dentista-hero.jpg"
+          alt="Dentista atendendo paciente"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(11,25,22,0.94) 0%, rgba(11,25,22,0.86) 40%, rgba(11,25,22,0.35) 68%, rgba(11,25,22,0.1) 100%)" }} />
+
+        <div style={{ position: "relative", maxWidth: 1200, margin: "0 auto", padding: "70px 24px", display: "flex", alignItems: "center", width: "100%" }}>
+          <div style={{ maxWidth: 480 }}>
+            <div className="op-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)", color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 22, letterSpacing: "0.03em", animationDelay: "0s" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.gold, display: "inline-block" }} />
+              GRÁTIS PARA TESTAR · SEM CARTÃO
+            </div>
+            <h1
+              className="op-fade-up"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 46px)",
+                lineHeight: 1.12, margin: "0 0 20px", letterSpacing: "-0.02em", color: "#fff", animationDelay: "0.08s",
+              }}
+            >
+              Seu parceiro na organização financeira entre clínicas.
+            </h1>
+            <p className="op-fade-up" style={{ fontSize: 16, color: "rgba(255,255,255,0.82)", lineHeight: 1.6, marginBottom: 30, animationDelay: "0.16s" }}>
+              O sistema que centraliza o que você tem a receber de cada clínica — com prazo calculado automaticamente.
+            </p>
+            <div className="op-fade-up" style={{ display: "flex", gap: 12, flexWrap: "wrap", animationDelay: "0.24s" }}>
+              <button onClick={onGoSignup} style={{ background: t.gold, border: "none", color: "#241a05", fontSize: 14.5, fontWeight: 800, padding: "13px 26px", borderRadius: 10, cursor: "pointer" }}>
+                TESTE GRATUITAMENTE!
+              </button>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Mockup flutuante */}
-        <div style={{ flex: "1 1 380px", minWidth: 300, position: "relative", height: 380, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: "100%", maxWidth: 380, height: 320, borderRadius: 20, background: t.primary, boxShadow: `0 24px 60px ${t.primary}44`, position: "relative", overflow: "hidden" }} className="op-fade-in">
+      {/* Mockup flutuante do produto */}
+      <section style={{ maxWidth: 1160, margin: "0 auto", padding: "70px 24px 40px", display: "flex", justifyContent: "center" }}>
+        <div style={{ position: "relative", height: 340, display: "flex", alignItems: "center", justifyContent: "center", width: "100%", maxWidth: 460 }}>
+          <div style={{ width: "100%", maxWidth: 380, height: 300, borderRadius: 20, background: t.primary, boxShadow: `0 24px 60px ${t.primary}44`, position: "relative", overflow: "hidden" }} className="op-fade-in">
             <div style={{ padding: "20px 22px" }}>
               <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", marginBottom: 4 }}>RECEBIDO ESTE MÊS</div>
               <div style={{ color: "#fff", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 30 }}>{formatCurrency(4820)}</div>
@@ -207,7 +229,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
 
       {/* Foto + história */}
       <Reveal>
-        <section style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 70px" }}>
+        <section id="como-funciona" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 70px" }}>
           <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 20, boxShadow: t.shadow, display: "flex", flexWrap: "wrap", overflow: "hidden" }}>
             {/*
               ESPAÇO PARA FOTO — troque o conteúdo desta div por:
@@ -238,7 +260,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
       </Reveal>
 
       {/* Como ajuda — com visual/gráfico em cada card, revelado ao rolar */}
-      <section style={{ maxWidth: 1080, margin: "0 auto", padding: "0 24px 70px" }}>
+      <section id="funcionalidades" style={{ maxWidth: 1080, margin: "0 auto", padding: "0 24px 70px" }}>
         <Reveal>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <div style={{ fontSize: 12.5, fontWeight: 700, color: t.primary, letterSpacing: "0.04em", marginBottom: 8 }}>COMO O ODONTOPERSONAL AJUDA</div>
@@ -272,9 +294,44 @@ export default function Landing({ onGoLogin, onGoSignup }) {
         </section>
       </Reveal>
 
-      <footer style={{ textAlign: "center", padding: "24px", fontSize: 12.5, color: t.textMuted }}>
-        <ShieldCheck size={14} style={{ verticalAlign: "-2px", marginRight: 4 }} />
-        Seus dados ficam protegidos e visíveis só para você.
+      <footer style={{ background: "#0E1C19", color: "rgba(255,255,255,0.7)", padding: "48px 24px 26px" }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 40, marginBottom: 32 }}>
+            <div style={{ flex: "1 1 220px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <ArcoLogo color={t.sidebarIcon || "#6FE0BE"} />
+                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 17, color: "#fff" }}>OdontoPersonal</span>
+              </div>
+              <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 240 }}>
+                Controle financeiro para dentistas autônomas que atendem em várias clínicas.
+              </p>
+            </div>
+
+            <div style={{ flex: "1 1 160px" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 14 }}>Produto</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13.5 }}>
+                <a href="#como-funciona" style={{ color: "inherit", textDecoration: "none" }}>Como funciona</a>
+                <a href="#funcionalidades" style={{ color: "inherit", textDecoration: "none" }}>Funcionalidades</a>
+              </div>
+            </div>
+
+            <div style={{ flex: "1 1 160px" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 14 }}>Comece agora</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13.5 }}>
+                <button onClick={onGoSignup} style={{ background: "none", border: "none", padding: 0, color: "inherit", textAlign: "left", cursor: "pointer", fontSize: 13.5 }}>Criar conta grátis</button>
+                <button onClick={onGoLogin} style={{ background: "none", border: "none", padding: 0, color: "inherit", textAlign: "left", cursor: "pointer", fontSize: 13.5 }}>Entrar</button>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 20, display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>© {new Date().getFullYear()} OdontoPersonal</div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", gap: 5 }}>
+              <ShieldCheck size={13} />
+              Seus dados ficam protegidos e visíveis só para você
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
