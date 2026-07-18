@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA, describePagamento } from "../components/ui.jsx";
+import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA, describePagamento, ClinicAvatar, clinicColor } from "../components/ui.jsx";
 
 const REGIMES = ["Semanal", "Quinzenal", "Mensal", "Por procedimento", "Outro"];
 
@@ -166,14 +166,17 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged }) {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {clinicas.map((c) => (
+        {clinicas.map((c, i) => (
           <Card key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 14.5 }}>{c.nome}</div>
-              <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>
-                {c.regime} · {describePagamento(c)} {c.contato && `· ${c.contato}`}
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <ClinicAvatar nome={c.nome} color={clinicColor(i)} />
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 14.5 }}>{c.nome}</div>
+                <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>
+                  {c.regime} · {describePagamento(c)} {c.contato && `· ${c.contato}`}
+                </div>
+                {c.obs && <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>{c.obs}</div>}
               </div>
-              {c.obs && <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>{c.obs}</div>}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <Button variant="ghost" onClick={() => startEdit(c)} icon={<Pencil size={14} />}>Editar</Button>

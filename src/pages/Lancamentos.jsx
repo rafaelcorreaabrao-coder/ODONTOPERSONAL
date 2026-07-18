@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, Field, Button, Badge, useInputStyle, formatCurrency, formatDate, todayISO, effectiveStatus, nextPaymentDate } from "../components/ui.jsx";
+import { Card, PageHeader, Field, Button, Badge, useInputStyle, formatCurrency, formatDate, todayISO, effectiveStatus, nextPaymentDate, ClinicAvatar, clinicColor } from "../components/ui.jsx";
 
 export default function Lancamentos({ userId, clinicas, lancamentos, onChanged }) {
   const t = useTheme();
@@ -202,11 +202,13 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged }
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {visiveis.map((l) => {
-            const c = clinicas.find((c) => c.id === l.clinica_id);
+            const idx = clinicas.findIndex((c) => c.id === l.clinica_id);
+            const c = clinicas[idx];
             const st = effectiveStatus(l);
             return (
               <Card key={l.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-                <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
+                  <ClinicAvatar nome={c ? c.nome : "?"} color={idx >= 0 ? clinicColor(idx) : t.textMuted} size={32} />
                   <Badge status={st} />
                   <div>
                     <div style={{ fontWeight: 600, fontSize: 14 }}>{c ? c.nome : "Clínica removida"} {l.procedimento && `· ${l.procedimento}`}</div>

@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { LayoutDashboard, Building2, Receipt, LogOut, BarChart3, Scale, ShieldCheck } from "lucide-react";
 import { supabase } from "./supabaseClient.js";
 import { PALETTES, ThemeCtx } from "./theme.js";
+import Landing from "./pages/Landing.jsx";
 import Auth from "./pages/Auth.jsx";
 import Onboarding from "./pages/Onboarding.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -44,6 +45,8 @@ export default function App() {
   const [clinicas, setClinicas] = useState([]);
   const [lancamentos, setLancamentos] = useState([]);
   const [subscription, setSubscription] = useState(null);
+  const [publicView, setPublicView] = useState("landing");
+  const [authInitialMode, setAuthInitialMode] = useState("login");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -113,7 +116,14 @@ export default function App() {
   if (!session) {
     return (
       <ThemeCtx.Provider value={t}>
-        <Auth />
+        {publicView === "landing" ? (
+          <Landing
+            onGoLogin={() => { setAuthInitialMode("login"); setPublicView("auth"); }}
+            onGoSignup={() => { setAuthInitialMode("signup"); setPublicView("auth"); }}
+          />
+        ) : (
+          <Auth initialMode={authInitialMode} onBack={() => setPublicView("landing")} />
+        )}
       </ThemeCtx.Provider>
     );
   }
@@ -208,7 +218,7 @@ export default function App() {
             </div>
           ) : (
             <>
-              {view === "dashboard" && <Dashboard clinicas={clinicas} lancamentos={lancamentos} />}
+              {view === "dashboard" && <Dashboard clinicas={clinicas} lancamentos={lancamentos} nickname={profile?.nickname} />}
               {view === "clinicas" && <Clinicas userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
               {view === "lancamentos" && <Lancamentos userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
               {view === "comparativos" && <Comparativos lancamentos={lancamentos} />}

@@ -166,7 +166,11 @@ security definer
 set search_path = public
 as $$
 begin
-  if new.is_admin is distinct from old.is_admin and not public.is_admin(auth.uid()) then
+  -- Só bloqueia quando é uma usuária logada tentando pelo site.
+  -- Alterações feitas direto no SQL Editor (sem sessão) sempre passam.
+  if new.is_admin is distinct from old.is_admin
+     and auth.uid() is not null
+     and not public.is_admin(auth.uid()) then
     new.is_admin := old.is_admin;
   end if;
   return new;

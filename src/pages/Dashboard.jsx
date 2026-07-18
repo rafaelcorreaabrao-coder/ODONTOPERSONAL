@@ -1,8 +1,21 @@
 import { useMemo } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { Wallet, Clock, AlertTriangle, ListChecks } from "lucide-react";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, MetricCard, formatCurrency, formatDate, effectiveStatus } from "../components/ui.jsx";
+import { Card, PageHeader, MetricCard, ClinicAvatar, clinicColor, greetingNow, formatCurrency, formatDate, effectiveStatus } from "../components/ui.jsx";
 
-export default function Dashboard({ clinicas, lancamentos }) {
+function DonutTooltip({ active, payload, t }) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0];
+  return (
+    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: t.shadow }}>
+      <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{p.name}</div>
+      <div style={{ fontSize: 13, fontFamily: "'IBM Plex Mono', monospace", color: p.payload.fill }}>{formatCurrency(p.value)}</div>
+    </div>
+  );
+}
+
+export default function Dashboard({ clinicas, lancamentos, nickname }) {
   const t = useTheme();
 
   const metrics = useMemo(() => {
@@ -18,17 +31,21 @@ export default function Dashboard({ clinicas, lancamentos }) {
   }, [lancamentos]);
 
   const porClinica = useMemo(() => {
-    return clinicas.map((c) => {
+    return clinicas.map((c, i) => {
       const items = lancamentos.filter((l) => l.clinica_id === c.id);
       const total = items.reduce((s, l) => s + (Number(l.valor) || 0), 0);
       const recebido = items.filter((l) => effectiveStatus(l) === "Pago").reduce((s, l) => s + (Number(l.valor) || 0), 0);
       const aReceber = items.filter((l) => effectiveStatus(l) === "A receber").reduce((s, l) => s + (Number(l.valor) || 0), 0);
       const atrasado = items.filter((l) => effectiveStatus(l) === "Atrasado").reduce((s, l) => s + (Number(l.valor) || 0), 0);
-      return { clinica: c, total, recebido, aReceber, atrasado, count: items.length };
+      return { clinica: c, total, recebido, aReceber, atrasado, count: items.length, color: clinicColor(i) };
     });
   }, [clinicas, lancamentos]);
 
-  const maxTotal = Math.max(1, ...porClinica.map((p) => p.total));
+  const donutData = useMemo(
+    () => porClinica.filter((p) => p.total > 0).map((p) => ({ name: p.clinica.nome, value: p.total, fill: p.color })),
+    [porClinica]
+  );
+
   const atrasados = lancamentos
     .filter((l) => effectiveStatus(l) === "Atrasado")
     .sort((a, b) => (a.data_prevista < b.data_prevista ? -1 : 1));
@@ -48,32 +65,50 @@ export default function Dashboard({ clinicas, lancamentos }) {
 
   return (
     <div>
-      <PageHeader title="Dashboard" subtitle="Visão geral de tudo que você tem a receber, já recebeu e está em atraso." />
+      <div style={{ marginBottom: 22 }}>
+        <div style={{ fontSize: 13.5, color: t.textMuted, marginBottom: 2 }}>{greetingNow()}{nickname ? "," : ""}</div>
+        <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 25, margin: 0, color: t.text }}>
+          {nickname || "Dashboard"} 👋
+        </h1>
+      </div>
 
       <div style={{ display: "flex", gap: 14, marginBottom: 22, flexWrap: "wrap" }}>
-        <MetricCard label="Recebido" value={formatCurrency(metrics.recebido)} />
-        <MetricCard label="A receber" value={formatCurrency(metrics.aReceber)} tone="accent" />
-        <MetricCard label="Atrasado" value={formatCurrency(metrics.atrasado)} tone="danger" />
-        <MetricCard label="Lançamentos atrasados" value={String(metrics.nAtrasado)} tone="danger" />
+        <MetricCard label="Recebido" value={formatCurrency(metrics.recebido)} tone="success" icon={Wallet} />
+        <MetricCard label="A receber" value={formatCurrency(metrics.aReceber)} tone="accent" icon={Clock} />
+        <MetricCard label="Atrasado" value={formatCurrency(metrics.atrasado)} tone="danger" icon={AlertTriangle} />
+        <MetricCard label="Lançamentos atrasados" value={String(metrics.nAtrasado)} tone="danger" icon={ListChecks} />
       </div>
 
       <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "flex-start" }}>
         <Card style={{ flex: "1 1 340px" }}>
           <div style={{ fontWeight: 600, marginBottom: 14, fontSize: 14.5 }}>Por clínica</div>
-          {porClinica.length === 0 && <div style={{ fontSize: 13.5, color: t.textMuted }}>Cadastre uma clínica para ver o comparativo aqui.</div>}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {porClinica.map((p) => (
-              <div key={p.clinica.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
-                  <span style={{ fontWeight: 600 }}>{p.clinica.nome}</span>
-                  <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: t.textMuted }}>{formatCurrency(p.total)}</span>
-                </div>
-                <div style={{ height: 7, borderRadius: 999, background: t.surfaceSunken, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.max(4, (p.total / maxTotal) * 100)}%`, background: p.atrasado > 0 ? t.danger : t.accentText, borderRadius: 999 }} />
-                </div>
+          {porClinica.length === 0 ? (
+            <div style={{ fontSize: 13.5, color: t.textMuted }}>Cadastre uma clínica para ver o comparativo aqui.</div>
+          ) : (
+            <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+              <div style={{ width: 140, height: 140, flexShrink: 0 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={donutData} dataKey="value" nameKey="name" innerRadius={42} outerRadius={64} paddingAngle={donutData.length > 1 ? 3 : 0} strokeWidth={0}>
+                      {donutData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                    </Pie>
+                    <Tooltip content={<DonutTooltip t={t} />} />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
+              <div style={{ flex: "1 1 160px", display: "flex", flexDirection: "column", gap: 10 }}>
+                {porClinica.map((p) => (
+                  <div key={p.clinica.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <ClinicAvatar nome={p.clinica.nome} color={p.color} size={28} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.clinica.nome}</div>
+                    </div>
+                    <div style={{ fontSize: 13, fontFamily: "'IBM Plex Mono', monospace", color: t.textMuted, whiteSpace: "nowrap" }}>{formatCurrency(p.total)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </Card>
 
         <Card style={{ flex: "1 1 300px" }}>
@@ -81,14 +116,16 @@ export default function Dashboard({ clinicas, lancamentos }) {
           {atrasados.length === 0 && <div style={{ fontSize: 13.5, color: t.textMuted }}>Nada atrasado por aqui.</div>}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {atrasados.slice(0, 6).map((l) => {
-              const c = clinicas.find((c) => c.id === l.clinica_id);
+              const idx = clinicas.findIndex((c) => c.id === l.clinica_id);
+              const c = clinicas[idx];
               return (
-                <div key={l.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, borderBottom: `1px solid ${t.border}`, paddingBottom: 8 }}>
-                  <div>
-                    <div style={{ fontWeight: 600 }}>{c ? c.nome : "Clínica removida"}</div>
-                    <div style={{ color: t.textMuted, fontSize: 12 }}>previsto {formatDate(l.data_prevista)}</div>
+                <div key={l.id} style={{ display: "flex", alignItems: "center", gap: 10, borderBottom: `1px solid ${t.border}`, paddingBottom: 8 }}>
+                  <ClinicAvatar nome={c ? c.nome : "?"} color={idx >= 0 ? clinicColor(idx) : t.textMuted} size={26} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{c ? c.nome : "Clínica removida"}</div>
+                    <div style={{ color: t.textMuted, fontSize: 11.5 }}>previsto {formatDate(l.data_prevista)}</div>
                   </div>
-                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: t.danger, fontWeight: 500 }}>{formatCurrency(l.valor)}</div>
+                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: t.danger, fontWeight: 700, fontSize: 13.5 }}>{formatCurrency(l.valor)}</div>
                 </div>
               );
             })}
@@ -120,8 +157,11 @@ export default function Dashboard({ clinicas, lancamentos }) {
                   {porClinica.map((p) => (
                     <tr key={p.clinica.id} style={{ borderBottom: `1px solid ${t.border}` }}>
                       <td style={{ padding: "10px 0", fontSize: 13.5, fontWeight: 600 }}>
-                        {p.clinica.nome}
-                        <span style={{ fontWeight: 400, color: t.textMuted, fontSize: 12 }}>{"  ·  "}{p.count} lançamento{p.count === 1 ? "" : "s"}</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <ClinicAvatar nome={p.clinica.nome} color={p.color} size={22} />
+                          {p.clinica.nome}
+                          <span style={{ fontWeight: 400, color: t.textMuted, fontSize: 12 }}>{p.count} lançamento{p.count === 1 ? "" : "s"}</span>
+                        </div>
                       </td>
                       <td style={{ ...td, color: t.success }}>{formatCurrency(p.recebido)}</td>
                       <td style={{ ...td, color: t.gold }}>{formatCurrency(p.aReceber)}</td>
