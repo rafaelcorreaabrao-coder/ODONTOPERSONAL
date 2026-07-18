@@ -219,7 +219,7 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged }
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 15, fontWeight: 500 }}>{formatCurrency(l.valor)}</div>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 500 }}>{formatCurrency(l.valor)}</div>
                   <Button variant="ghost" onClick={() => togglePago(l)}>{l.pago ? "Marcar não pago" : "Marcar como pago"}</Button>
                   <Button variant="ghost" onClick={() => setForm({ ...l, valor: String(l.valor) })} icon={<Pencil size={14} />}>Editar</Button>
                   <Button variant="danger" onClick={() => remove(l.id)} icon={<Trash2 size={14} />}>Remover</Button>

@@ -95,7 +95,7 @@ export default function Calculadora() {
                     <th style={{ textAlign: "right", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" }}>Nova</th>
                   </tr>
                 </thead>
-                <tbody style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13.5 }}>
+                <tbody style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13.5 }}>
                   <tr style={{ borderBottom: `1px solid ${t.border}` }}>
                     <td style={{ padding: "10px 0", fontFamily: "'IBM Plex Sans', sans-serif", fontWeight: 600 }}>Ganho bruto / dia</td>
                     <td style={{ padding: "10px 0", textAlign: "right" }}>{formatCurrency(atual.ganho)}</td>
