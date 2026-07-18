@@ -10,7 +10,7 @@ function DonutTooltip({ active, payload, t }) {
   return (
     <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: t.shadow }}>
       <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{p.name}</div>
-      <div style={{ fontSize: 13, fontFamily: "'Space Grotesk', sans-serif", color: p.payload.fill }}>{formatCurrency(p.value)}</div>
+      <div style={{ fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", color: p.payload.fill }}>{formatCurrency(p.value)}</div>
     </div>
   );
 }
@@ -61,13 +61,13 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
   );
 
   const th = { textAlign: "right", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" };
-  const td = { textAlign: "right", fontSize: 13.5, fontFamily: "'Space Grotesk', sans-serif", padding: "10px 0" };
+  const td = { textAlign: "right", fontSize: 13.5, fontFamily: "'Plus Jakarta Sans', sans-serif", padding: "10px 0" };
 
   return (
     <div>
       <div style={{ marginBottom: 22 }}>
         <div style={{ fontSize: 13.5, color: t.textMuted, marginBottom: 2 }}>{greetingNow()}{nickname ? "," : ""}</div>
-        <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 25, margin: 0, color: t.text }}>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 25, margin: 0, color: t.text }}>
           {nickname || "Dashboard"} 👋
         </h1>
       </div>
@@ -103,7 +103,7 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.clinica.nome}</div>
                     </div>
-                    <div style={{ fontSize: 13, fontFamily: "'Space Grotesk', sans-serif", color: t.textMuted, whiteSpace: "nowrap" }}>{formatCurrency(p.total)}</div>
+                    <div style={{ fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", color: t.textMuted, whiteSpace: "nowrap" }}>{formatCurrency(p.total)}</div>
                   </div>
                 ))}
               </div>
@@ -125,7 +125,7 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
                     <div style={{ fontWeight: 600, fontSize: 13 }}>{c ? c.nome : "Clínica removida"}</div>
                     <div style={{ color: t.textMuted, fontSize: 11.5 }}>previsto {formatDate(l.data_prevista)}</div>
                   </div>
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", color: t.danger, fontWeight: 700, fontSize: 13.5 }}>{formatCurrency(l.valor)}</div>
+                  <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: t.danger, fontWeight: 700, fontSize: 13.5 }}>{formatCurrency(l.valor)}</div>
                 </div>
               );
             })}

@@ -29,7 +29,7 @@ export function ClinicAvatar({ nome, color, size = 36 }) {
       style={{
         width: size, height: size, borderRadius: "50%", background: color, color: "#fff",
         display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700,
-        fontSize: size * 0.42, flexShrink: 0, fontFamily: "'Space Grotesk', sans-serif",
+        fontSize: size * 0.42, flexShrink: 0, fontFamily: "'Plus Jakarta Sans', sans-serif",
       }}
     >
       {initial}
@@ -219,7 +219,7 @@ export function PageHeader({ title, subtitle }) {
     <div style={{ marginBottom: 22 }}>
       <h1
         style={{
-          fontFamily: "'Space Grotesk', sans-serif",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
           fontWeight: 600,
           fontSize: 23,
           margin: 0,
@@ -248,7 +248,7 @@ export function MetricCard({ label, value, tone = "default", icon: Icon }) {
         )}
         <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
       </div>
-      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 23, fontWeight: 700, color: toneColor }}>{value}</div>
+      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 23, fontWeight: 700, color: toneColor }}>{value}</div>
     </Card>
   );
 }

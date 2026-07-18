@@ -53,7 +53,7 @@ export default function Auth({ initialMode = "login", onBack }) {
             />
             <ellipse cx="14.5" cy="12.5" rx="3" ry="4.6" fill="rgba(255,255,255,0.4)" transform="rotate(-22 14.5 12.5)" />
           </svg>
-          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 22, color: t.text }}>OdontoPersonal</div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 22, color: t.text }}>OdontoPersonal</div>
           <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>controle financeiro para dentistas autônomas</div>
         </div>
 

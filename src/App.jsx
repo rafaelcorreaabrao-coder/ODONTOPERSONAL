@@ -159,7 +159,7 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <ArcoLogo color={t.sidebarIcon} />
               <div>
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 15, color: t.sidebarActiveText, letterSpacing: "-0.01em" }}>OdontoPersonal</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 15, color: t.sidebarActiveText, letterSpacing: "-0.01em" }}>OdontoPersonal</div>
                 <div style={{ fontSize: 10.5, color: t.sidebarTextDim }}>{profile?.nickname || "..."}</div>
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function App() {
         <main className="app-main" style={{ flex: 1, padding: "26px 30px", minWidth: 0 }}>
           {acessoBloqueado ? (
             <div style={{ maxWidth: 480 }}>
-              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 20, marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 20, marginBottom: 8 }}>
                 Assinatura {subscription.status === "overdue" ? "atrasada" : "inativa"}
               </div>
               <p style={{ fontSize: 14, color: t.textMuted, lineHeight: 1.6 }}>
