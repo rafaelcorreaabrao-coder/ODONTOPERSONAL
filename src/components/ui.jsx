@@ -253,7 +253,7 @@ export function MetricCard({ label, value, tone = "default", icon: Icon }) {
             <Icon size={16} color={toneColor} strokeWidth={2.2} />
           </div>
         )}
-        <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
+        <div style={{ fontSize: 12.5, color: t.textMuted, fontWeight: 500 }}>{label}</div>
       </div>
       <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 23, fontWeight: 700, color: toneColor }}>{value}</div>
     </Card>

@@ -90,9 +90,9 @@ export default function Calculadora() {
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                    <th style={{ textAlign: "left", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" }}></th>
-                    <th style={{ textAlign: "right", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" }}>Atual</th>
-                    <th style={{ textAlign: "right", fontSize: 11.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.03em" }}>Nova</th>
+                    <th style={{ textAlign: "left", fontSize: 12.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px" }}></th>
+                    <th style={{ textAlign: "right", fontSize: 12.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px" }}>Atual</th>
+                    <th style={{ textAlign: "right", fontSize: 12.5, fontWeight: 600, color: t.textMuted, padding: "0 0 10px" }}>Nova</th>
                   </tr>
                 </thead>
                 <tbody style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 13.5 }}>

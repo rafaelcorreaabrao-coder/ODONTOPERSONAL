@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Wallet, Clock, AlertTriangle, ListChecks } from "lucide-react";
+import { Wallet, AlertTriangle, ListChecks } from "lucide-react";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, MetricCard, ClinicAvatar, clinicColor, greetingNow, formatCurrency, formatDate, effectiveStatus } from "../components/ui.jsx";
+import { Card, PageHeader, ClinicAvatar, clinicColor, greetingNow, formatCurrency, formatDate, effectiveStatus } from "../components/ui.jsx";
 
 function DonutTooltip({ active, payload, t }) {
   if (!active || !payload || !payload.length) return null;
@@ -62,18 +62,60 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
 
   return (
     <div>
-      <div style={{ marginBottom: 22 }}>
-        <div style={{ fontSize: 13.5, color: t.textMuted, marginBottom: 2 }}>{greetingNow()}{nickname ? "," : ""}</div>
-        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 25, margin: 0, color: t.text }}>
-          {nickname || "Dashboard"} 👋
-        </h1>
-      </div>
+      <div
+        style={{
+          background: `linear-gradient(135deg, ${t.primary}, ${t.accentText})`,
+          borderRadius: 22,
+          padding: "28px 30px",
+          color: "#fff",
+          marginBottom: 20,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute", top: -60, right: -40, width: 220, height: 220, borderRadius: "50%",
+            background: "rgba(255,255,255,0.08)", pointerEvents: "none",
+          }}
+        />
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.8)", marginBottom: 2 }}>{greetingNow()}{nickname ? "," : ""}</div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 18 }}>
+            {nickname || "Dashboard"} 👋
+          </div>
 
-      <div style={{ display: "flex", gap: 14, marginBottom: 22, flexWrap: "wrap" }}>
-        <MetricCard label="Recebido" value={formatCurrency(metrics.recebido)} tone="success" icon={Wallet} />
-        <MetricCard label="A receber" value={formatCurrency(metrics.aReceber)} tone="accent" icon={Clock} />
-        <MetricCard label="Atrasado" value={formatCurrency(metrics.atrasado)} tone="danger" icon={AlertTriangle} />
-        <MetricCard label="Lançamentos atrasados" value={String(metrics.nAtrasado)} tone="danger" icon={ListChecks} />
+          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
+            Total a receber
+          </div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 38, marginBottom: 20 }}>
+            {formatCurrency(metrics.aReceber + metrics.atrasado)}
+          </div>
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div style={{ background: "rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+              <Wallet size={16} color="#fff" />
+              <div>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.8)" }}>Recebido</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5 }}>{formatCurrency(metrics.recebido)}</div>
+              </div>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+              <AlertTriangle size={16} color="#FFD9CC" />
+              <div>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.8)" }}>Atrasado</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5 }}>{formatCurrency(metrics.atrasado)}</div>
+              </div>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+              <ListChecks size={16} color="#fff" />
+              <div>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.8)" }}>Lançamentos atrasados</div>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5 }}>{metrics.nAtrasado}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "flex-start" }}>
@@ -155,16 +197,16 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
                   </div>
                   <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
                     <div>
-                      <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.03em" }}>Recebido</div>
-                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.success }}>{formatCurrency(p.recebido)}</div>
+                      <div style={{ fontSize: 11.5, color: t.textMuted }}>Recebido</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.success }}>{formatCurrency(p.recebido)}</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.03em" }}>A receber</div>
-                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.gold }}>{formatCurrency(p.aReceber)}</div>
+                      <div style={{ fontSize: 11.5, color: t.textMuted }}>A receber</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.gold }}>{formatCurrency(p.aReceber)}</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.03em" }}>Atrasado</div>
-                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: p.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(p.atrasado)}</div>
+                      <div style={{ fontSize: 11.5, color: t.textMuted }}>Atrasado</div>
+                      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: p.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(p.atrasado)}</div>
                     </div>
                   </div>
                 </div>
@@ -174,16 +216,16 @@ export default function Dashboard({ clinicas, lancamentos, nickname }) {
                 <div style={{ flex: "1 1 140px", fontWeight: 700, fontSize: 14 }}>Total geral</div>
                 <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
                   <div>
-                    <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase" }}>Recebido</div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.success }}>{formatCurrency(totals.recebido)}</div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>Recebido</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.success }}>{formatCurrency(totals.recebido)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase" }}>A receber</div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: t.gold }}>{formatCurrency(totals.aReceber)}</div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>A receber</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: t.gold }}>{formatCurrency(totals.aReceber)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10.5, color: t.textMuted, fontWeight: 600, textTransform: "uppercase" }}>Atrasado</div>
-                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14.5, color: totals.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(totals.atrasado)}</div>
+                    <div style={{ fontSize: 11.5, color: t.textMuted }}>Atrasado</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14.5, color: totals.atrasado > 0 ? t.danger : t.textMuted }}>{formatCurrency(totals.atrasado)}</div>
                   </div>
                 </div>
               </div>
