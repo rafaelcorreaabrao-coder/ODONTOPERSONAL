@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { LayoutDashboard, Building2, Receipt, LogOut } from "lucide-react";
+import { LayoutDashboard, Building2, Receipt, LogOut, BarChart3, Scale, ShieldCheck } from "lucide-react";
 import { supabase } from "./supabaseClient.js";
 import { PALETTES, ThemeCtx } from "./theme.js";
 import Auth from "./pages/Auth.jsx";
@@ -7,6 +7,9 @@ import Onboarding from "./pages/Onboarding.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Clinicas from "./pages/Clinicas.jsx";
 import Lancamentos from "./pages/Lancamentos.jsx";
+import Comparativos from "./pages/Comparativos.jsx";
+import Calculadora from "./pages/Calculadora.jsx";
+import Admin from "./pages/Admin.jsx";
 
 function ArcoLogo({ size = 30, color }) {
   return (
@@ -40,6 +43,7 @@ export default function App() {
   });
   const [clinicas, setClinicas] = useState([]);
   const [lancamentos, setLancamentos] = useState([]);
+  const [subscription, setSubscription] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -66,6 +70,12 @@ export default function App() {
         setProfile(data);
         setProfileChecked(true);
       });
+    supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .maybeSingle()
+      .then(({ data }) => setSubscription(data));
   }, [session]);
 
   const refetch = useCallback(async () => {
@@ -91,6 +101,7 @@ export default function App() {
     await supabase.auth.signOut();
     setSession(null);
     setProfile(null);
+    setSubscription(null);
     setClinicas([]);
     setLancamentos([]);
   }
@@ -121,7 +132,14 @@ export default function App() {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "clinicas", label: "Clínicas", icon: Building2 },
     { id: "lancamentos", label: "Lançamentos", icon: Receipt },
+    { id: "comparativos", label: "Comparativos", icon: BarChart3 },
+    { id: "calculadora", label: "Vale a pena?", icon: Scale },
   ];
+  if (profile?.is_admin) {
+    NAV.push({ id: "admin", label: "Painel CEO", icon: ShieldCheck });
+  }
+
+  const acessoBloqueado = !profile?.is_admin && subscription && (subscription.status === "inactive" || subscription.status === "overdue");
 
   return (
     <ThemeCtx.Provider value={t}>
@@ -178,9 +196,26 @@ export default function App() {
         </aside>
 
         <main className="app-main" style={{ flex: 1, padding: "26px 30px", minWidth: 0 }}>
-          {view === "dashboard" && <Dashboard clinicas={clinicas} lancamentos={lancamentos} />}
-          {view === "clinicas" && <Clinicas userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
-          {view === "lancamentos" && <Lancamentos userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
+          {acessoBloqueado ? (
+            <div style={{ maxWidth: 480 }}>
+              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 20, marginBottom: 8 }}>
+                Assinatura {subscription.status === "overdue" ? "atrasada" : "inativa"}
+              </div>
+              <p style={{ fontSize: 14, color: t.textMuted, lineHeight: 1.6 }}>
+                Seus dados continuam guardados com segurança, mas o acesso está pausado no momento.
+                Entre em contato para reativar sua assinatura.
+              </p>
+            </div>
+          ) : (
+            <>
+              {view === "dashboard" && <Dashboard clinicas={clinicas} lancamentos={lancamentos} />}
+              {view === "clinicas" && <Clinicas userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
+              {view === "lancamentos" && <Lancamentos userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} />}
+              {view === "comparativos" && <Comparativos lancamentos={lancamentos} />}
+              {view === "calculadora" && <Calculadora />}
+              {view === "admin" && profile?.is_admin && <Admin />}
+            </>
+          )}
         </main>
       </div>
     </ThemeCtx.Provider>
