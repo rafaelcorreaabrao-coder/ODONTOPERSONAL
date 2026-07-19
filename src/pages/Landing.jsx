@@ -130,7 +130,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <ArcoLogo color="#fff" />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, color: "#fff" }}>OdontoPersonal</span>
+            <span style={{ fontWeight: 800, fontSize: 18, color: "#fff" }}>OdontoPersonal</span>
           </div>
           <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
             <a href="#como-funciona" className="op-nav-link" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Como funciona</a>
@@ -166,7 +166,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
             <h1
               className="op-fade-up"
               style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 46px)",
+                fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 46px)",
                 lineHeight: 1.12, margin: "0 0 20px", letterSpacing: "-0.02em", color: "#fff", animationDelay: "0.08s",
               }}
             >
@@ -190,7 +190,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
           <div style={{ width: "100%", maxWidth: 380, height: 300, borderRadius: 20, background: t.primary, boxShadow: `0 24px 60px ${t.primary}44`, position: "relative", overflow: "hidden" }} className="op-fade-in">
             <div style={{ padding: "20px 22px" }}>
               <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", marginBottom: 4 }}>RECEBIDO ESTE MÊS</div>
-              <div style={{ color: "#fff", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 30 }}>{formatCurrency(4820)}</div>
+              <div style={{ color: "#fff", fontWeight: 800, fontSize: 30 }}>{formatCurrency(4820)}</div>
               <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, color: "#B9F5DD", fontSize: 12.5, fontWeight: 600 }}>
                 <TrendingUp size={13} /> 18% vs mês anterior
               </div>
@@ -242,7 +242,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
             </div>
             <div style={{ flex: "1 1 380px", padding: "36px 32px" }}>
               <div style={{ fontSize: 12.5, fontWeight: 700, color: t.gold, letterSpacing: "0.04em", marginBottom: 8 }}>DE ONDE VEIO A IDEIA</div>
-              <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 24, margin: "0 0 12px" }}>
+              <h2 style={{ fontWeight: 800, fontSize: 24, margin: "0 0 12px" }}>
                 Um problema específico, de quem vive na rotina de várias clínicas
               </h2>
               <p style={{ fontSize: 14, color: t.textMuted, lineHeight: 1.65, marginBottom: 18 }}>
@@ -264,7 +264,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
         <Reveal>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <div style={{ fontSize: 12.5, fontWeight: 700, color: t.primary, letterSpacing: "0.04em", marginBottom: 8 }}>COMO O ODONTOPERSONAL AJUDA</div>
-            <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 28, margin: 0 }}>Tudo o que você precisa pra nunca mais perder o controle</h2>
+            <h2 style={{ fontWeight: 800, fontSize: 28, margin: 0 }}>Tudo o que você precisa pra nunca mais perder o controle</h2>
           </div>
         </Reveal>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 22 }}>
@@ -287,7 +287,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
       <Reveal>
         <section style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px 72px", textAlign: "center" }}>
           <div style={{ background: t.primary, borderRadius: 20, padding: "44px 32px", color: "#fff" }}>
-            <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 25, margin: "0 0 10px" }}>Comece a organizar suas finanças hoje</h2>
+            <h2 style={{ fontWeight: 800, fontSize: 25, margin: "0 0 10px" }}>Comece a organizar suas finanças hoje</h2>
             <p style={{ fontSize: 14, opacity: 0.85, marginBottom: 24 }}>Grátis para começar. Sem cartão de crédito.</p>
             <Button onClick={onGoSignup} style={{ background: "#fff", color: t.primary, padding: "13px 26px", fontSize: 14.5, borderRadius: 10 }}>Criar minha conta →</Button>
           </div>
@@ -300,7 +300,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
             <div style={{ flex: "1 1 220px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <ArcoLogo color={t.sidebarIcon || "#6FE0BE"} />
-                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 17, color: "#fff" }}>OdontoPersonal</span>
+                <span style={{ fontWeight: 800, fontSize: 17, color: "#fff" }}>OdontoPersonal</span>
               </div>
               <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 240 }}>
                 Controle financeiro para dentistas autônomas que atendem em várias clínicas.

@@ -80,19 +80,19 @@ export default function Admin() {
         <div style={{ display: "flex", gap: 14, marginBottom: 22, flexWrap: "wrap" }}>
           <Card style={{ flex: 1, minWidth: 140 }}>
             <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 600, marginBottom: 6 }}>Total de contas</div>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20 }}>{totals.total}</div>
+            <div style={{ fontWeight: 700, fontSize: 22 }}>{totals.total}</div>
           </Card>
           <Card style={{ flex: 1, minWidth: 140 }}>
             <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 600, marginBottom: 6 }}>Ativas</div>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, color: t.success }}>{totals.active}</div>
+            <div style={{ fontWeight: 700, fontSize: 22, color: t.success }}>{totals.active}</div>
           </Card>
           <Card style={{ flex: 1, minWidth: 140 }}>
             <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 600, marginBottom: 6 }}>Em teste</div>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, color: t.gold }}>{totals.trial}</div>
+            <div style={{ fontWeight: 700, fontSize: 22, color: t.gold }}>{totals.trial}</div>
           </Card>
           <Card style={{ flex: 1, minWidth: 140 }}>
             <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 600, marginBottom: 6 }}>Inativas/atrasadas</div>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 20, color: t.danger }}>{totals.inactive}</div>
+            <div style={{ fontWeight: 700, fontSize: 22, color: t.danger }}>{totals.inactive}</div>
           </Card>
         </div>
       )}

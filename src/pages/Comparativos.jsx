@@ -10,9 +10,9 @@ const DIAS_SEMANA_CURTO = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 function CustomTooltip({ active, payload, label, t }) {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: t.shadow, fontFamily: "'IBM Plex Sans', sans-serif" }}>
+    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: t.shadow, fontFamily: 'inherit' }}>
       <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{label}</div>
-      <div style={{ fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", color: t.primary }}>{formatCurrency(payload[0].value)}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: t.primary }}>{formatCurrency(payload[0].value)}</div>
     </div>
   );
 }
@@ -76,8 +76,8 @@ export default function Comparativos({ lancamentos }) {
           <ResponsiveContainer>
             <BarChart data={porMes} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={t.border} vertical={false} />
-              <XAxis dataKey="mes" tick={{ fontSize: 12, fill: t.textMuted, fontFamily: "'IBM Plex Sans', sans-serif" }} axisLine={{ stroke: t.border }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: t.textMuted, fontFamily: "'Plus Jakarta Sans', sans-serif" }} axisLine={false} tickLine={false} width={56} tickFormatter={(v) => `${(v / 1000).toFixed(v >= 1000 ? 0 : 1)}k`} />
+              <XAxis dataKey="mes" tick={{ fontSize: 12, fill: t.textMuted, fontFamily: 'inherit' }} axisLine={{ stroke: t.border }} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: t.textMuted, fontWeight: 600 }} axisLine={false} tickLine={false} width={56} tickFormatter={(v) => `${(v / 1000).toFixed(v >= 1000 ? 0 : 1)}k`} />
               <Tooltip content={<CustomTooltip t={t} />} cursor={{ fill: t.surfaceSunken }} />
               <Bar dataKey="valor" fill={t.primary} radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -98,8 +98,8 @@ export default function Comparativos({ lancamentos }) {
           <ResponsiveContainer>
             <BarChart data={porDiaSemana} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={t.border} vertical={false} />
-              <XAxis dataKey="dia" tick={{ fontSize: 12, fill: t.textMuted, fontFamily: "'IBM Plex Sans', sans-serif" }} axisLine={{ stroke: t.border }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: t.textMuted, fontFamily: "'Plus Jakarta Sans', sans-serif" }} axisLine={false} tickLine={false} width={56} tickFormatter={(v) => `${(v / 1000).toFixed(v >= 1000 ? 0 : 1)}k`} />
+              <XAxis dataKey="dia" tick={{ fontSize: 12, fill: t.textMuted, fontFamily: 'inherit' }} axisLine={{ stroke: t.border }} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: t.textMuted, fontWeight: 600 }} axisLine={false} tickLine={false} width={56} tickFormatter={(v) => `${(v / 1000).toFixed(v >= 1000 ? 0 : 1)}k`} />
               <Tooltip content={<CustomTooltip t={t} />} cursor={{ fill: t.surfaceSunken }} />
               <Bar dataKey="valor" radius={[6, 6, 0, 0]}>
                 {porDiaSemana.map((entry, i) => (

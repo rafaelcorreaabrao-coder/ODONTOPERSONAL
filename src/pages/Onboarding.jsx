@@ -34,14 +34,14 @@ export default function Onboarding({ userId, onDone }) {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif", padding: 16 }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page,  padding: 16 }}>
       <Card style={{ width: "100%", maxWidth: 380 }}>
         <div style={{ marginBottom: 18 }}>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 20, color: t.text }}>
+          <div style={{ fontWeight: 700, fontSize: 20, color: t.text }}>
             Vamos criar sua loja
           </div>
           <div style={{ fontSize: 13, color: t.textMuted, marginTop: 4 }}>
-            Esse é o nome que identifica você dentro do Arco. Precisa ser exclusivo — algo como o nome da sua clínica pessoal ou como você é conhecida profissionalmente.
+            Esse é o nome que identifica você dentro do OdontoPersonal. Precisa ser exclusivo — algo como o nome da sua clínica pessoal ou como você é conhecida profissionalmente.
           </div>
         </div>
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>

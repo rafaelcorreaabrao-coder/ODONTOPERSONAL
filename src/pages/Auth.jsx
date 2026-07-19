@@ -38,7 +38,7 @@ export default function Auth({ initialMode = "login", onBack }) {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page, fontFamily: "'IBM Plex Sans', sans-serif", padding: 16 }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: t.page,  padding: 16 }}>
       <Card style={{ width: "100%", maxWidth: 360 }}>
         {onBack && (
           <button onClick={onBack} style={{ background: "none", border: "none", color: t.textMuted, fontSize: 12.5, cursor: "pointer", marginBottom: 14, padding: 0 }}>
@@ -53,7 +53,7 @@ export default function Auth({ initialMode = "login", onBack }) {
             />
             <ellipse cx="14.5" cy="12.5" rx="3" ry="4.6" fill="rgba(255,255,255,0.4)" transform="rotate(-22 14.5 12.5)" />
           </svg>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 22, color: t.text }}>OdontoPersonal</div>
+          <div style={{ fontWeight: 700, fontSize: 22, color: t.text }}>OdontoPersonal</div>
           <div style={{ fontSize: 12.5, color: t.textMuted, marginTop: 2 }}>controle financeiro para dentistas autônomas</div>
         </div>
 
