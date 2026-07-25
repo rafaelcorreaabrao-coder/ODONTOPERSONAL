@@ -74,6 +74,14 @@ export function describePagamento(c) {
   return c.dia_pagamento || "dia não definido";
 }
 
+export const DIAS_SEMANA_CURTO = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+export function describeAgenda(c) {
+  const dias = c.dias_atendimento || [];
+  if (!dias.length) return "nenhum dia definido";
+  return dias.slice().sort((a, b) => a - b).map(i => DIAS_SEMANA_CURTO[i]).join(", ");
+}
+
 export function effectiveStatus(l) {
   if (l.pago) return "Pago";
   if (l.data_prevista && l.data_prevista < todayISO()) return "Atrasado";

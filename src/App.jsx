@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { LayoutDashboard, Building2, Receipt, LogOut, BarChart3, ArrowLeftRight, ShieldCheck, Menu, X } from "lucide-react";
+import { LayoutDashboard, Building2, Receipt, LogOut, BarChart3, ArrowLeftRight, ShieldCheck, Menu, X, CalendarDays, CalendarClock } from "lucide-react";
 import { supabase } from "./supabaseClient.js";
 import { PALETTES, ThemeCtx } from "./theme.js";
 import { Toast } from "./components/ui.jsx";
@@ -8,8 +8,10 @@ import Auth from "./pages/Auth.jsx";
 import Onboarding from "./pages/Onboarding.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Clinicas from "./pages/Clinicas.jsx";
+import Agenda from "./pages/Agenda.jsx";
 import Lancamentos from "./pages/Lancamentos.jsx";
 import Comparativos from "./pages/Comparativos.jsx";
+import Calendario from "./pages/Calendario.jsx";
 import Calculadora from "./pages/Calculadora.jsx";
 import Admin from "./pages/Admin.jsx";
 
@@ -84,7 +86,9 @@ export default function App() {
   const NAV = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "clinicas", label: "Clínicas", icon: Building2 },
+    { id: "agenda", label: "Agenda", icon: CalendarClock },
     { id: "lancamentos", label: "Lançamentos", icon: Receipt },
+    { id: "calendario", label: "Calendário", icon: CalendarDays },
     { id: "comparativos", label: "Comparativos", icon: BarChart3 },
     { id: "calculadora", label: "Simulador de troca", icon: ArrowLeftRight },
   ];
@@ -199,8 +203,10 @@ export default function App() {
             <>
               {view === "dashboard" && <Dashboard clinicas={clinicas} lancamentos={lancamentos} nickname={profile?.nickname} />}
               {view === "clinicas" && <Clinicas userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} toast={toast} />}
+              {view === "agenda" && <Agenda clinicas={clinicas} />}
               {view === "lancamentos" && <Lancamentos userId={session.user.id} clinicas={clinicas} lancamentos={lancamentos} onChanged={refetch} toast={toast} />}
               {view === "comparativos" && <Comparativos lancamentos={lancamentos} />}
+              {view === "calendario" && <Calendario lancamentos={lancamentos} />}
               {view === "calculadora" && <Calculadora />}
               {view === "admin" && profile?.is_admin && <Admin />}
             </>

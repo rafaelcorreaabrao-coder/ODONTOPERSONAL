@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Pencil, Trash2, Check, X, Building2 } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA, describePagamento, ClinicAvatar, clinicColor, EmptyState } from "../components/ui.jsx";
+import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA, DIAS_SEMANA_CURTO, describePagamento, describeAgenda, ClinicAvatar, clinicColor, EmptyState } from "../components/ui.jsx";
 
 const REGIMES = ["Semanal", "Quinzenal", "Mensal", "Por procedimento", "Outro"];
 
@@ -13,8 +13,8 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  function startNew() { setForm({ id: null, nome: "", regime: REGIMES[0], dia_semana: "5", dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", contato: "", obs: "" }); }
-  function startEdit(c) { setForm({ dia_semana: "5", dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", ...c }); }
+  function startNew() { setForm({ id: null, nome: "", regime: REGIMES[0], dia_semana: "5", dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", dias_atendimento: [], contato: "", obs: "" }); }
+  function startEdit(c) { setForm({ dia_semana: "5", dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", dias_atendimento: c.dias_atendimento || [], ...c }); }
   async function remove(id) {
     if (lancamentos.some(l => l.clinica_id === id) && !window.confirm("Essa clínica tem lançamentos. Remover mesmo assim?")) return;
     const { error: e } = await supabase.from("clinicas").delete().eq("id", id);
@@ -30,6 +30,7 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
       dia_mes_1: ["Mensal", "Quinzenal"].includes(form.regime) ? Number(form.dia_mes_1) || null : null,
       dia_mes_2: form.regime === "Quinzenal" ? Number(form.dia_mes_2) || null : null,
       prazo_dias: form.regime === "Por procedimento" ? Number(form.prazo_dias) || null : null,
+      dias_atendimento: form.dias_atendimento || [],
       contato: form.contato, obs: form.obs,
     };
     const { error: err } = form.id
@@ -59,6 +60,34 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
               {form.regime === "Por procedimento" && <div style={{ flex: "1 1 160px" }}><Field label="Dias após atendimento"><input type="number" min="0" style={inputStyle} value={form.prazo_dias} onChange={e => setForm({ ...form, prazo_dias: e.target.value })} placeholder="7" /></Field></div>}
               {form.regime === "Outro" && <div style={{ flex: "1 1 160px" }}><Field label="Dia(s) de pagamento"><input style={inputStyle} value={form.dia_pagamento} onChange={e => setForm({ ...form, dia_pagamento: e.target.value })} /></Field></div>}
             </div>
+            <div>
+              <Field label="Dias da semana que atende nessa clínica" hint="Isso monta sua agenda automaticamente">
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {DIAS_SEMANA_CURTO.map((d, i) => {
+                    const active = (form.dias_atendimento || []).includes(i);
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => {
+                          const cur = form.dias_atendimento || [];
+                          setForm({ ...form, dias_atendimento: active ? cur.filter(x => x !== i) : [...cur, i] });
+                        }}
+                        style={{
+                          width: 42, height: 42, borderRadius: 10, fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                          border: `1.5px solid ${active ? t.primary : t.border}`,
+                          background: active ? t.primary : "transparent",
+                          color: active ? "#fff" : t.textMuted,
+                          transition: "all .15s ease",
+                        }}
+                      >
+                        {d}
+                      </button>
+                    );
+                  })}
+                </div>
+              </Field>
+            </div>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div style={{ flex: "1 1 180px" }}><Field label="Contato"><input style={inputStyle} value={form.contato} onChange={e => setForm({ ...form, contato: e.target.value })} /></Field></div>
               <div style={{ flex: "2 1 240px" }}><Field label="Observações"><input style={inputStyle} value={form.obs} onChange={e => setForm({ ...form, obs: e.target.value })} /></Field></div>
@@ -81,6 +110,7 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
               <div>
                 <div style={{ fontWeight: 600, fontSize: 14 }}>{c.nome}</div>
                 <div style={{ fontSize: 12, color: t.textMuted, marginTop: 2 }}>{c.regime} · {describePagamento(c)} {c.contato && `· ${c.contato}`}</div>
+                <div style={{ fontSize: 12, color: t.textMuted, marginTop: 2 }}>Atende: {describeAgenda(c)}</div>
               </div>
             </div>
             <div style={{ display: "flex", gap: 6 }}>

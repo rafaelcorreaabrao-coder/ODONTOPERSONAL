@@ -12,6 +12,8 @@ Tempo estimado: 15-20 minutos na primeira vez. Não precisa de nenhum serviço p
 
 > **Já tinha criado o banco antes?** Rode também o arquivo `supabase/migration_dia_pagamento.sql` no SQL Editor — ele adiciona as colunas novas usadas para calcular automaticamente a data prevista de pagamento. Se está criando o banco pela primeira vez, pode ignorar esse arquivo (o `schema.sql` já vem completo).
 
+> **Agenda (novo):** rode também `supabase/migration_agenda.sql` no SQL Editor — adiciona o campo de dias de atendimento em cada clínica. Se está criando o banco do zero, ignore, o `schema.sql` já vem completo.
+
 > **Painel CEO (novo):** rode também `supabase/migration_admin_subscriptions.sql` no SQL Editor. Ele cria o sistema de assinaturas e a permissão de administrador. **Depois de rodar**, é preciso um último passo manual pra você virar o CEO: no final desse mesmo arquivo tem uma linha comentada (começando com `--`), tipo:
 > ```sql
 > update public.profiles set is_admin = true

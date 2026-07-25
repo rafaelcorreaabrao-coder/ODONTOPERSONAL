@@ -35,6 +35,7 @@ create table if not exists public.clinicas (
   dia_mes_1 int,
   dia_mes_2 int,
   prazo_dias int,
+  dias_atendimento int[] not null default '{}',
   contato text default '',
   obs text default '',
   created_at timestamptz not null default now()
