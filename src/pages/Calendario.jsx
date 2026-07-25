@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, formatCurrency } from "../components/ui.jsx";
+import { Card, PageHeader, formatCurrency, formatCompact } from "../components/ui.jsx";
 
 const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 const DIAS_CURTO = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -97,14 +97,14 @@ export default function Calendario({ lancamentos }) {
         <div style={{ fontSize: 12, color: t.textMuted, marginBottom: 16 }}>Quanto mais escuro o verde, maior o valor lançado naquele dia.</div>
 
         <div className="op-cal-scroll" style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
-          <div style={{ minWidth: 322 }}>
-            <div className="op-cal-weekdays" style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(40px, 1fr))", gap: 6, marginBottom: 6 }}>
+          <div style={{ minWidth: 246 }}>
+            <div className="op-cal-weekdays" style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(30px, 1fr))", gap: 6, marginBottom: 6 }}>
               {DIAS_CURTO.map((d) => (
                 <span key={d} style={{ textAlign: "center", fontSize: 11, fontWeight: 600, color: t.textMuted, textTransform: "uppercase" }}>{d}</span>
               ))}
             </div>
 
-            <div className="op-cal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(40px, 1fr))", gap: 6 }}>
+            <div className="op-cal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(30px, 1fr))", gap: 6 }}>
               {cells.map((d, i) => {
                 if (d === null) return <div key={`e${i}`} />;
                 const v = porDia[d] || 0;
@@ -115,14 +115,14 @@ export default function Calendario({ lancamentos }) {
                     key={d}
                     title={`${d} de ${MESES[mes]} — ${formatCurrency(v)}`}
                     style={{
-                      aspectRatio: "1", borderRadius: 10, padding: "5px 6px", display: "flex", flexDirection: "column",
+                      aspectRatio: "1", borderRadius: 8, padding: "3px 4px", display: "flex", flexDirection: "column",
                       justifyContent: "space-between", border: isToday ? `2px solid ${t.primary}` : `1px solid ${t.border}`,
                       background: isToday ? t.primarySoft : levelBg[lv], minWidth: 0,
                     }}
                   >
-                    <span style={{ fontSize: 11.5, fontWeight: 600, color: isToday ? t.primary : t.textMuted }}>{d}</span>
-                    <span className="op-cal-val" style={{ fontSize: 10, fontWeight: 700, color: v ? t.success : t.border, alignSelf: "flex-end", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "clip" }}>
-                      {v ? formatCurrency(v).replace("R$", "").trim() : "—"}
+                    <span style={{ fontSize: 10, fontWeight: 600, color: isToday ? t.primary : t.textMuted }}>{d}</span>
+                    <span className="op-cal-val" style={{ fontSize: 8.5, fontWeight: 700, color: v ? t.success : t.border, alignSelf: "flex-end", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "clip", lineHeight: 1 }}>
+                      {formatCompact(v)}
                     </span>
                   </div>
                 );

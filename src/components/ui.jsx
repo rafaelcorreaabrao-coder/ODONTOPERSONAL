@@ -5,6 +5,17 @@ import { useTheme } from "../theme.js";
 export function formatCurrency(v) {
   return (Number(v) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
+// Versão compacta: sem ",00" quando o valor é redondo, e abreviada acima de mil (ex: "150", "1,2k").
+// Usada em espaços pequenos, como os quadradinhos do calendário no celular.
+export function formatCompact(v) {
+  const n = Number(v) || 0;
+  if (!n) return "—";
+  if (n >= 1000) {
+    const k = n / 1000;
+    return (Number.isInteger(k) ? String(k) : k.toFixed(1).replace(".", ",")) + "k";
+  }
+  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(".", ",");
+}
 export function formatDate(iso) {
   if (!iso) return "\u2014";
   const [y, m, d] = iso.split("-");
