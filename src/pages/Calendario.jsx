@@ -96,35 +96,39 @@ export default function Calendario({ lancamentos }) {
         <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>Calendário do mês</div>
         <div style={{ fontSize: 12, color: t.textMuted, marginBottom: 16 }}>Quanto mais escuro o verde, maior o valor lançado naquele dia.</div>
 
-        <div className="op-cal-weekdays" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6, marginBottom: 6 }}>
-          {DIAS_CURTO.map((d) => (
-            <span key={d} style={{ textAlign: "center", fontSize: 11, fontWeight: 600, color: t.textMuted, textTransform: "uppercase" }}>{d}</span>
-          ))}
-        </div>
+        <div className="op-cal-scroll" style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <div style={{ minWidth: 322 }}>
+            <div className="op-cal-weekdays" style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(40px, 1fr))", gap: 6, marginBottom: 6 }}>
+              {DIAS_CURTO.map((d) => (
+                <span key={d} style={{ textAlign: "center", fontSize: 11, fontWeight: 600, color: t.textMuted, textTransform: "uppercase" }}>{d}</span>
+              ))}
+            </div>
 
-        <div className="op-cal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6 }}>
-          {cells.map((d, i) => {
-            if (d === null) return <div key={`e${i}`} />;
-            const v = porDia[d] || 0;
-            const isToday = isMesAtual && d === hojeDia;
-            const lv = levelFor(v);
-            return (
-              <div
-                key={d}
-                title={`${d} de ${MESES[mes]} — ${formatCurrency(v)}`}
-                style={{
-                  aspectRatio: "1", borderRadius: 10, padding: "6px 8px", display: "flex", flexDirection: "column",
-                  justifyContent: "space-between", border: isToday ? `2px solid ${t.primary}` : `1px solid ${t.border}`,
-                  background: isToday ? t.primarySoft : levelBg[lv],
-                }}
-              >
-                <span style={{ fontSize: 12, fontWeight: 600, color: isToday ? t.primary : t.textMuted }}>{d}</span>
-                <span className="op-cal-val" style={{ fontSize: 11, fontWeight: 700, color: v ? t.success : t.border, alignSelf: "flex-end" }}>
-                  {v ? formatCurrency(v).replace("R$", "").trim() : "—"}
-                </span>
-              </div>
-            );
-          })}
+            <div className="op-cal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(40px, 1fr))", gap: 6 }}>
+              {cells.map((d, i) => {
+                if (d === null) return <div key={`e${i}`} />;
+                const v = porDia[d] || 0;
+                const isToday = isMesAtual && d === hojeDia;
+                const lv = levelFor(v);
+                return (
+                  <div
+                    key={d}
+                    title={`${d} de ${MESES[mes]} — ${formatCurrency(v)}`}
+                    style={{
+                      aspectRatio: "1", borderRadius: 10, padding: "5px 6px", display: "flex", flexDirection: "column",
+                      justifyContent: "space-between", border: isToday ? `2px solid ${t.primary}` : `1px solid ${t.border}`,
+                      background: isToday ? t.primarySoft : levelBg[lv], minWidth: 0,
+                    }}
+                  >
+                    <span style={{ fontSize: 11.5, fontWeight: 600, color: isToday ? t.primary : t.textMuted }}>{d}</span>
+                    <span className="op-cal-val" style={{ fontSize: 10, fontWeight: 700, color: v ? t.success : t.border, alignSelf: "flex-end", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "clip" }}>
+                      {v ? formatCurrency(v).replace("R$", "").trim() : "—"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div style={{ display: "flex", gap: 14, marginTop: 14, fontSize: 11, color: t.textMuted, flexWrap: "wrap" }}>
@@ -161,10 +165,8 @@ export default function Calendario({ lancamentos }) {
       </Card>
 
       <style>{`
-        @media (max-width: 480px) {
-          .op-cal-val { font-size: 9px !important; }
-          .op-cal-weekdays span { font-size: 9.5px !important; }
-        }
+        .op-cal-scroll::-webkit-scrollbar { height: 6px; }
+        .op-cal-scroll::-webkit-scrollbar-thumb { background: ${t.border}; border-radius: 999px; }
       `}</style>
     </div>
   );
