@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarClock, Building2, BarChart3, Scale, ShieldCheck, TrendingUp, Bell } from "lucide-react";
+import { CalendarClock, Building2, BarChart3, Scale, ShieldCheck, TrendingUp, Bell, ArrowRight, CalendarDays } from "lucide-react";
 import { useTheme } from "../theme.js";
 import { Button, formatCurrency } from "../components/ui.jsx";
 
@@ -28,7 +28,7 @@ const ANIM_CSS = `
 .op-fade-up { opacity: 0; animation: fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; }
 .op-fade-in { opacity: 0; animation: fadeIn .8s ease forwards; }
 .op-float { animation: floatCard 5.5s ease-in-out infinite; }
-@media (max-width: 720px) { .op-nav-link { display: none !important; } }
+@media (max-width: 720px) { .op-nav-link { display: none !important; } .op-mobile-qr-banner { display: none !important; } }
 `;
 
 /* Revela o conteúdo com fade + deslize, na primeira vez que entra na tela ao rolar */
@@ -126,66 +126,89 @@ function FloatingCard({ style, delay, children }) {
 
 export default function Landing({ onGoLogin, onGoSignup }) {
   const t = useTheme();
+  const [showMobileBanner, setShowMobileBanner] = useState(true);
+  const pageUrl = typeof window !== "undefined" ? window.location.href : "";
+  const qrCodeSrc = pageUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=${encodeURIComponent(pageUrl)}` : "";
 
   return (
     <div style={{ minHeight: "100vh", background: t.page, color: t.text, overflowX: "hidden" }}>
       <style>{ANIM_CSS}</style>
 
-      {/* Top nav — barra cheia colorida */}
-      <header style={{ background: t.primary, position: "sticky", top: 0, zIndex: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", maxWidth: 1200, margin: "0 auto" }}>
+      {/* Top nav — clara, com mais links */}
+      <header style={{ background: t.surface, borderBottom: `1px solid ${t.border}`, position: "sticky", top: 0, zIndex: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px", maxWidth: 1200, margin: "0 auto", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <ArcoLogo />
-            <span style={{ fontWeight: 800, fontSize: 18, color: "#fff" }}>ODONTOCASH</span>
+            <ArcoLogo size={28} />
+            <span style={{ fontWeight: 800, fontSize: 17 }}>Dent<span style={{ color: t.gold }}>Control</span></span>
           </div>
-          <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
-            <a href="#como-funciona" className="op-nav-link" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Como funciona</a>
-            <a href="#funcionalidades" className="op-nav-link" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Funcionalidades</a>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={onGoLogin} style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.5)", color: "#fff", fontSize: 13.5, fontWeight: 700, padding: "8px 16px", borderRadius: 8, cursor: "pointer" }}>
-                Entrar
-              </button>
-              <button onClick={onGoSignup} style={{ background: "#fff", border: "none", color: t.primary, fontSize: 13.5, fontWeight: 700, padding: "8px 16px", borderRadius: 8, cursor: "pointer" }}>
-                Criar conta grátis
-              </button>
-            </div>
+          <nav className="op-nav-links" style={{ display: "flex", alignItems: "center", gap: 24, flex: 1, justifyContent: "center" }}>
+            <a href="#funcionalidades" className="op-nav-link" style={{ color: t.textMuted, fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Funcionalidades</a>
+            <a href="#sobre" className="op-nav-link" style={{ color: t.textMuted, fontSize: 14, fontWeight: 600, textDecoration: "none" }}>Sobre</a>
           </nav>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button onClick={onGoLogin} style={{ background: "transparent", border: "none", color: t.textMuted, fontSize: 13.5, fontWeight: 600, padding: "8px 10px", cursor: "pointer" }}>
+              Entrar
+            </button>
+            <button onClick={onGoSignup} style={{ background: t.primary, border: "none", color: "#fff", fontSize: 13.5, fontWeight: 700, padding: "9px 18px", borderRadius: 8, cursor: "pointer" }}>
+              Começar agora
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Hero — foto full-bleed com overlay escuro */}
-      <section style={{ position: "relative", minHeight: 520, display: "flex", alignItems: "stretch", overflow: "hidden" }}>
-        <img
-          src="/dentista-hero.jpg"
-          alt="Dentista atendendo paciente"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
-        />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(11,25,22,0.94) 0%, rgba(11,25,22,0.86) 40%, rgba(11,25,22,0.35) 68%, rgba(11,25,22,0.1) 100%)" }} />
+      {/* Banner — link para abrir no celular via QR code */}
+      {showMobileBanner && (
+        <div className="op-mobile-qr-banner" style={{ background: t.primarySoft, borderBottom: `1px solid ${t.border}` }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "14px 24px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            {qrCodeSrc && (
+              <img src={qrCodeSrc} alt="QR code para abrir no celular" width={56} height={56} style={{ borderRadius: 8, background: "#fff", flexShrink: 0 }} />
+            )}
+            <div style={{ flex: "1 1 260px" }}>
+              <div style={{ fontWeight: 700, fontSize: 13.5 }}>Prefere continuar pelo celular?</div>
+              <div style={{ fontSize: 12.5, color: t.textMuted }}>Aponte a câmera do seu celular pro QR code ao lado para abrir este link direto no seu telefone.</div>
+            </div>
+            <button onClick={() => setShowMobileBanner(false)} style={{ background: "none", border: "none", color: t.textMuted, cursor: "pointer", padding: 4, display: "flex" }}>✕</button>
+          </div>
+        </div>
+      )}
 
-        <div style={{ position: "relative", maxWidth: 1200, margin: "0 auto", padding: "70px 24px", display: "flex", alignItems: "center", width: "100%" }}>
-          <div style={{ maxWidth: 480 }}>
-            <div className="op-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)", color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 22, letterSpacing: "0.03em", animationDelay: "0s" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.gold, display: "inline-block" }} />
-              GRÁTIS PARA TESTAR · SEM CARTÃO
+      {/* Hero — fundo escuro sólido, centralizado */}
+      <section style={{ background: `linear-gradient(160deg, #0B1917, ${t.primary})`, padding: "56px 24px 64px", textAlign: "center" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto" }}>
+
+          <div className="op-fade-up" style={{ background: t.surface, borderRadius: 14, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, textAlign: "left", marginBottom: 28, boxShadow: "0 8px 24px rgba(0,0,0,0.25)", animationDelay: "0s" }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: t.primarySoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <CalendarDays size={18} color={t.primary} />
             </div>
-            <h1
-              className="op-fade-up"
-              style={{
-                fontWeight: 800, fontSize: "clamp(32px, 4.4vw, 46px)",
-                lineHeight: 1.12, margin: "0 0 20px", letterSpacing: "-0.02em", color: "#fff", animationDelay: "0.08s",
-              }}
-            >
-              Seu parceiro na organização financeira entre clínicas.
-            </h1>
-            <p className="op-fade-up" style={{ fontSize: 16, color: "rgba(255,255,255,0.82)", lineHeight: 1.6, marginBottom: 30, animationDelay: "0.16s" }}>
-              O sistema que centraliza o que você tem a receber de cada clínica — com prazo calculado automaticamente.
-            </p>
-            <div className="op-fade-up" style={{ display: "flex", gap: 12, flexWrap: "wrap", animationDelay: "0.24s" }}>
-              <button onClick={onGoSignup} style={{ background: t.gold, border: "none", color: "#241a05", fontSize: 14.5, fontWeight: 800, padding: "13px 26px", borderRadius: 10, cursor: "pointer" }}>
-                TESTE GRATUITAMENTE!
-              </button>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                <span style={{ background: t.primary, color: "#fff", fontSize: 10, fontWeight: 800, padding: "2px 7px", borderRadius: 5, letterSpacing: "0.03em" }}>NOVO</span>
+                <span style={{ fontWeight: 700, fontSize: 13.5 }}>Calendário de faturamento</span>
+              </div>
+              <div style={{ fontSize: 12.5, color: t.textMuted }}>Veja quanto você recebeu em cada dia do mês, com destaque pro dia de hoje.</div>
             </div>
+            <ArrowRight size={18} color={t.textMuted} style={{ flexShrink: 0 }} />
+          </div>
+
+          <div className="op-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.25)", color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 20, letterSpacing: "0.03em", animationDelay: "0.08s" }}>
+            <TrendingUp size={13} /> GESTÃO FINANCEIRA PARA DENTISTAS
+          </div>
+
+          <h1 className="op-fade-up" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.12, margin: "0 0 20px", letterSpacing: "-0.02em", color: "#fff", animationDelay: "0.16s" }}>
+            Transforme a rotina em várias clínicas em <span style={{ color: "#6EE7B7" }}>controle total do seu dinheiro</span>
+          </h1>
+
+          <p className="op-fade-up" style={{ fontSize: 16, color: "rgba(255,255,255,0.8)", lineHeight: 1.6, marginBottom: 30, animationDelay: "0.24s" }}>
+            Cálculo automático de pagamento, comparativos visuais, simulador de troca de clínica e calendário de faturamento — tudo numa única plataforma pensada para a dentista autônoma brasileira.
+          </p>
+
+          <div className="op-fade-up" style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", animationDelay: "0.32s" }}>
+            <button onClick={onGoSignup} style={{ background: "#fff", border: "none", color: t.primary, fontSize: 14.5, fontWeight: 800, padding: "13px 26px", borderRadius: 10, cursor: "pointer" }}>
+              Começar agora, é grátis
+            </button>
+            <button onClick={onGoLogin} style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.4)", color: "#fff", fontSize: 14.5, fontWeight: 700, padding: "13px 26px", borderRadius: 10, cursor: "pointer" }}>
+              Já tenho conta
+            </button>
           </div>
         </div>
       </section>
@@ -235,7 +258,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
 
       {/* Foto + história */}
       <Reveal>
-        <section id="como-funciona" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 70px" }}>
+        <section id="sobre" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 70px" }}>
           <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 20, boxShadow: t.shadow, display: "flex", flexWrap: "wrap", overflow: "hidden" }}>
             {/*
               ESPAÇO PARA FOTO — troque o conteúdo desta div por:
@@ -306,7 +329,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
             <div style={{ flex: "1 1 220px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <ArcoLogo />
-                <span style={{ fontWeight: 800, fontSize: 17, color: "#fff" }}>ODONTOCASH</span>
+                <span style={{ fontWeight: 800, fontSize: 17, color: "#fff" }}>Dent<span style={{ color: "#6EE7B7" }}>Control</span></span>
               </div>
               <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 240 }}>
                 Controle financeiro para dentistas autônomas que atendem em várias clínicas.
@@ -316,7 +339,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
             <div style={{ flex: "1 1 160px" }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 14 }}>Produto</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13.5 }}>
-                <a href="#como-funciona" style={{ color: "inherit", textDecoration: "none" }}>Como funciona</a>
+                <a href="#sobre" style={{ color: "inherit", textDecoration: "none" }}>Como funciona</a>
                 <a href="#funcionalidades" style={{ color: "inherit", textDecoration: "none" }}>Funcionalidades</a>
               </div>
             </div>
@@ -331,7 +354,7 @@ export default function Landing({ onGoLogin, onGoSignup }) {
           </div>
 
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 20, display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>© {new Date().getFullYear()} ODONTOCASH</div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>© {new Date().getFullYear()} DentControl</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", gap: 5 }}>
               <ShieldCheck size={13} />
               Seus dados ficam protegidos e visíveis só para você

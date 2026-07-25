@@ -132,7 +132,7 @@ export default function App() {
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <button onClick={() => setMobileMenuOpen(true)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: t.text }}><Menu size={22} /></button>
             <Logo size={22} />
-            <span style={{ fontWeight: 700, fontSize: 15 }}>ODONTOCASH</span>
+            <span style={{ fontWeight: 700, fontSize: 15 }}>Dent<span style={{ color: t.gold }}>Control</span></span>
           </div>
         </div>
         <div style={{ height: 52, display: "none" }} className="op-mobile-bar" />
@@ -146,7 +146,7 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 10, paddingLeft: 4 }}>
               <Logo size={32} />
               <div>
-                <div style={{ fontWeight: 700, fontSize: 14, color: t.sidebarActiveText }}>ODONTOCASH</div>
+                <div style={{ fontWeight: 700, fontSize: 14, color: t.sidebarActiveText }}>Dent<span style={{ color: t.gold }}>Control</span></div>
                 <div style={{ fontSize: 12, color: t.sidebarTextDim }}>{profile?.nickname || "..."}</div>
               </div>
             </div>

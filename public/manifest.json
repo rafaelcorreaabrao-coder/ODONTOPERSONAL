@@ -1,6 +1,6 @@
 {
-  "name": "ODONTOCASH — controle financeiro",
-  "short_name": "ODONTOCASH",
+  "name": "DentControl — controle financeiro",
+  "short_name": "DentControl",
   "description": "Controle financeiro para dentistas autônomas que atendem em várias clínicas.",
   "start_url": "/",
   "scope": "/",
