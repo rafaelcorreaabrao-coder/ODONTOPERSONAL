@@ -15,11 +15,15 @@ import Calendario from "./pages/Calendario.jsx";
 import Calculadora from "./pages/Calculadora.jsx";
 import Admin from "./pages/Admin.jsx";
 
-function Logo({ size = 26, color }) {
+function Logo({ size = 26 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <path d="M20 4.5C12.6 4.5 6.8 9.7 6.8 16.1c0 3.5 1.3 5.4 2.1 8 1 3.4.4 8.5 2.7 11.3 1.4 1.7 3 -.8 4.5-4.2 1.1-2.4 2.2-4.2 3.9-4.2s2.8 1.8 3.9 4.2c1.5 3.4 3.1 5.9 4.5 4.2 2.3-2.8 1.7-7.9 2.7-11.3.8-2.6 2.1-4.5 2.1-8C33.2 9.7 27.4 4.5 20 4.5z" fill={color}/>
-      <ellipse cx="14.5" cy="12.5" rx="3" ry="4.6" fill="rgba(255,255,255,0.35)" transform="rotate(-22 14.5 12.5)"/>
+      <path d="M20 4.5C12.6 4.5 6.8 9.7 6.8 16.1c0 3.5 1.3 5.4 2.1 8 1 3.4.4 8.5 2.7 11.3 1.4 1.7 3-.8 4.5-4.2 1.1-2.4 2.2-4.2 3.9-4.2s2.8 1.8 3.9 4.2c1.5 3.4 3.1 5.9 4.5 4.2 2.3-2.8 1.7-7.9 2.7-11.3.8-2.6 2.1-4.5 2.1-8C33.2 9.7 27.4 4.5 20 4.5z" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="1" />
+      <ellipse cx="15.5" cy="14.5" rx="1.6" ry="2" fill="#111827" />
+      <ellipse cx="24.5" cy="14.5" rx="1.6" ry="2" fill="#111827" />
+      <path d="M14.5 19 Q20 23.5 25.5 19" stroke="#111827" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <circle cx="29.5" cy="27" r="7.5" fill="#059669" stroke="#fff" strokeWidth="1.8" />
+      <text x="29.5" y="30.3" fontSize="8.5" fontWeight="800" fill="#fff" textAnchor="middle" fontFamily="Arial">$</text>
     </svg>
   );
 }
@@ -127,8 +131,8 @@ export default function App() {
         <div className="op-mobile-bar" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 48, background: t.surface, borderBottom: `1px solid ${t.border}`, padding: "10px 16px", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <button onClick={() => setMobileMenuOpen(true)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: t.text }}><Menu size={22} /></button>
-            <Logo size={22} color={t.primary} />
-            <span style={{ fontWeight: 700, fontSize: 15 }}>OdontoPersonal</span>
+            <Logo size={22} />
+            <span style={{ fontWeight: 700, fontSize: 15 }}>ODONTOCASH</span>
           </div>
         </div>
         <div style={{ height: 52, display: "none" }} className="op-mobile-bar" />
@@ -140,9 +144,9 @@ export default function App() {
         <aside className={`op-sidebar ${mobileMenuOpen ? "open" : ""}`}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, paddingLeft: 4 }}>
-              <Logo color={t.sidebarIcon} />
+              <Logo size={32} />
               <div>
-                <div style={{ fontWeight: 700, fontSize: 14, color: t.sidebarActiveText }}>OdontoPersonal</div>
+                <div style={{ fontWeight: 700, fontSize: 14, color: t.sidebarActiveText }}>ODONTOCASH</div>
                 <div style={{ fontSize: 12, color: t.sidebarTextDim }}>{profile?.nickname || "..."}</div>
               </div>
             </div>

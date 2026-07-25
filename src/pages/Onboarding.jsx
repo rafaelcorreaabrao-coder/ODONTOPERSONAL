@@ -41,7 +41,7 @@ export default function Onboarding({ userId, onDone }) {
             Vamos criar sua loja
           </div>
           <div style={{ fontSize: 13, color: t.textMuted, marginTop: 4 }}>
-            Esse é o nome que identifica você dentro do OdontoPersonal. Precisa ser exclusivo — algo como o nome da sua clínica pessoal ou como você é conhecida profissionalmente.
+            Esse é o nome que identifica você dentro do ODONTOCASH. Precisa ser exclusivo — algo como o nome da sua clínica pessoal ou como você é conhecida profissionalmente.
           </div>
         </div>
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>

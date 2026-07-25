@@ -4,6 +4,35 @@ import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
 import { Card, PageHeader, Field, Button, Badge, useInputStyle, formatCurrency, formatDate, todayISO, effectiveStatus, nextPaymentDate, ClinicAvatar, clinicColor, EmptyState, FilterPills } from "../components/ui.jsx";
 
+function StatusSelect({ effective, onChange, t }) {
+  const colors = {
+    Pago: { bg: t.successSoft, fg: t.success },
+    Atrasado: { bg: t.dangerSoft, fg: t.danger },
+    "A receber": { bg: t.goldSoft, fg: t.gold },
+  };
+  const c = colors[effective] || colors["A receber"];
+  return (
+    <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+      <select
+        value={effective === "Pago" ? "pago" : "a_receber"}
+        onChange={e => onChange(e.target.value === "pago")}
+        aria-label="Status do lançamento"
+        style={{
+          appearance: "none", WebkitAppearance: "none", border: "none", cursor: "pointer",
+          background: c.bg, color: c.fg, fontWeight: 700, fontSize: 12.5,
+          padding: "6px 26px 6px 12px", borderRadius: 8, outline: "none",
+        }}
+      >
+        <option value="a_receber">A receber</option>
+        <option value="pago">Pago</option>
+      </select>
+      <svg width="10" height="10" viewBox="0 0 10 10" style={{ position: "absolute", right: 9, pointerEvents: "none" }}>
+        <path d="M1.5 3L5 6.5L8.5 3" stroke={c.fg} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
 export default function Lancamentos({ userId, clinicas, lancamentos, onChanged, toast }) {
   const t = useTheme();
   const inputStyle = useInputStyle();
@@ -30,7 +59,7 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged, 
   }
 
   async function remove(id) { if (!window.confirm("Remover este lançamento?")) return; const { error: e } = await supabase.from("lancamentos").delete().eq("id", id); if (e) setError(e.message); else { onChanged(); toast?.("Lançamento removido"); } }
-  async function togglePago(l) { const np = !l.pago; const { error: e } = await supabase.from("lancamentos").update({ pago: np, data_pagamento: np ? todayISO() : null }).eq("id", l.id); if (e) setError(e.message); else { onChanged(); toast?.(np ? "Marcado como pago" : "Desmarcado"); } }
+  async function setStatus(l, pago) { const { error: e } = await supabase.from("lancamentos").update({ pago, data_pagamento: pago ? todayISO() : null }).eq("id", l.id); if (e) setError(e.message); else { onChanged(); toast?.(pago ? "Status: Pago" : "Status: A receber"); } }
 
   const visiveis = lancamentos.filter(l => filtro === "Todos" || effectiveStatus(l) === filtro).sort((a, b) => (a.data_prevista < b.data_prevista ? 1 : -1));
 
@@ -81,7 +110,7 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged, 
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, whiteSpace: "nowrap" }}>{formatCurrency(l.valor)}</div>
-                  <Button variant={l.pago ? "ghost" : "secondary"} onClick={() => togglePago(l)} style={{ fontSize: 12, padding: "5px 10px" }}>{l.pago ? "Desfazer" : "Pagar"}</Button>
+                  <StatusSelect lancamento={l} effective={st} onChange={pago => setStatus(l, pago)} t={t} />
                   <div style={{ position: "relative" }}>
                     <button onClick={() => setOpenMenu(openMenu === l.id ? null : l.id)} style={{ background: "none", border: `1px solid ${t.border}`, borderRadius: 6, padding: "4px 6px", cursor: "pointer", display: "flex", color: t.textMuted }}><MoreHorizontal size={16} /></button>
                     {openMenu === l.id && (

@@ -1,4 +1,4 @@
-# OdontoPersonal — passo a passo para colocar no ar (grátis)
+# ODONTOCASH — passo a passo para colocar no ar (grátis)
 
 Tempo estimado: 15-20 minutos na primeira vez. Não precisa de nenhum serviço pago.
 

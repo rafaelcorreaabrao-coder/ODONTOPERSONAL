@@ -20,12 +20,11 @@ function CustomTooltip({ active, payload, label, t }) {
 export default function Comparativos({ lancamentos }) {
   const t = useTheme();
 
-  const pagos = useMemo(() => lancamentos.filter((l) => l.pago && l.data_pagamento), [lancamentos]);
-
   const porMes = useMemo(() => {
     const map = {};
-    for (const l of pagos) {
-      const [y, m] = l.data_pagamento.split("-");
+    for (const l of lancamentos) {
+      if (!l.data_atendimento) continue;
+      const [y, m] = l.data_atendimento.split("-");
       const key = `${y}-${m}`;
       map[key] = (map[key] || 0) + (Number(l.valor) || 0);
     }
@@ -36,29 +35,30 @@ export default function Comparativos({ lancamentos }) {
         const [y, m] = key.split("-");
         return { mes: `${MESES[Number(m) - 1]}/${y.slice(2)}`, valor };
       });
-  }, [pagos]);
+  }, [lancamentos]);
 
   const porDiaSemana = useMemo(() => {
     const totals = [0, 0, 0, 0, 0, 0, 0];
-    for (const l of pagos) {
+    for (const l of lancamentos) {
+      if (!l.data_atendimento) continue;
       const d = new Date(l.data_atendimento + "T00:00:00");
       totals[d.getDay()] += Number(l.valor) || 0;
     }
     return DIAS_SEMANA_CURTO.map((label, i) => ({ dia: label, valor: totals[i] }));
-  }, [pagos]);
+  }, [lancamentos]);
 
   const melhorDia = useMemo(() => {
     if (porDiaSemana.every((d) => d.valor === 0)) return null;
     return porDiaSemana.reduce((best, cur) => (cur.valor > best.valor ? cur : best));
   }, [porDiaSemana]);
 
-  if (pagos.length === 0) {
+  if (lancamentos.length === 0) {
     return (
       <div>
-        <PageHeader title="Comparativos" subtitle="Receita mês a mês e por dia da semana." icon={BarChart3} />
+        <PageHeader title="Comparativos" subtitle="Faturamento mês a mês e por dia da semana." icon={BarChart3} />
         <Card>
           <div style={{ fontSize: 14, color: t.textMuted }}>
-            Ainda não há lançamentos marcados como pagos. Assim que você marcar alguns pagamentos como recebidos, os gráficos aparecem aqui.
+            Ainda não há lançamentos cadastrados. Assim que você registrar alguns atendimentos, os gráficos aparecem aqui.
           </div>
         </Card>
       </div>
@@ -67,11 +67,11 @@ export default function Comparativos({ lancamentos }) {
 
   return (
     <div>
-      <PageHeader title="Comparativos" subtitle="Receita mês a mês e por dia da semana (só considera lançamentos já pagos)." icon={BarChart3} />
+      <PageHeader title="Comparativos" subtitle="Faturamento mês a mês e por dia da semana — considera todos os lançamentos, pagos ou não." icon={BarChart3} />
 
       <Card style={{ marginBottom: 18 }}>
         <div style={{ fontWeight: 600, marginBottom: 4, fontSize: 14.5 }}>Receita por mês</div>
-        <div style={{ fontSize: 12.5, color: t.textMuted, marginBottom: 14 }}>Últimos 12 meses com pagamento registrado.</div>
+        <div style={{ fontSize: 12.5, color: t.textMuted, marginBottom: 14 }}>Últimos 12 meses com lançamentos registrados.</div>
         <div style={{ width: "100%", height: 260 }}>
           <ResponsiveContainer>
             <BarChart data={porMes} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
