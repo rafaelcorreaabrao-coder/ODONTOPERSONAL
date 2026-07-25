@@ -65,6 +65,7 @@ create table if not exists public.lancamentos (
   user_id uuid not null references auth.users(id) on delete cascade,
   clinica_id uuid references public.clinicas(id) on delete set null,
   data_atendimento date not null,
+  paciente text default '',
   procedimento text default '',
   valor numeric(12,2) not null default 0,
   data_prevista date not null,

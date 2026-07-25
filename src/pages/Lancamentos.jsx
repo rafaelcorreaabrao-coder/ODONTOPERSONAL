@@ -44,14 +44,14 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged, 
 
   function blank() {
     const clinic = clinicas[0]; const atendimento = todayISO();
-    return { id: null, data_atendimento: atendimento, clinica_id: clinic?.id || "", procedimento: "", valor: "", data_prevista: clinic ? nextPaymentDate(clinic, atendimento) : atendimento, pago: false, data_pagamento: "", obs: "" };
+    return { id: null, data_atendimento: atendimento, clinica_id: clinic?.id || "", paciente: "", procedimento: "", valor: "", data_prevista: clinic ? nextPaymentDate(clinic, atendimento) : atendimento, pago: false, data_pagamento: "", obs: "" };
   }
 
   async function submit(e) {
     e.preventDefault();
     if (!form.clinica_id || !form.valor) return;
     setSaving(true); setError("");
-    const payload = { clinica_id: form.clinica_id, data_atendimento: form.data_atendimento, procedimento: form.procedimento, valor: Number(form.valor) || 0, data_prevista: form.data_prevista, pago: form.pago, data_pagamento: form.pago ? (form.data_pagamento || todayISO()) : null, obs: form.obs };
+    const payload = { clinica_id: form.clinica_id, data_atendimento: form.data_atendimento, paciente: form.paciente, procedimento: form.procedimento, valor: Number(form.valor) || 0, data_prevista: form.data_prevista, pago: form.pago, data_pagamento: form.pago ? (form.data_pagamento || todayISO()) : null, obs: form.obs };
     const { error: err } = form.id ? await supabase.from("lancamentos").update(payload).eq("id", form.id) : await supabase.from("lancamentos").insert({ ...payload, user_id: userId });
     setSaving(false);
     if (err) setError(err.message);
@@ -76,6 +76,7 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged, 
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div style={{ flex: "1 1 160px" }}><Field label="Clínica"><select style={inputStyle} value={form.clinica_id} onChange={e => { const c = clinicas.find(x => x.id === e.target.value); setForm({ ...form, clinica_id: e.target.value, data_prevista: c ? nextPaymentDate(c, form.data_atendimento) : form.data_prevista }); }}>{clinicas.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></Field></div>
+              <div style={{ flex: "1 1 160px" }}><Field label="Nome do paciente"><input style={inputStyle} value={form.paciente} onChange={e => setForm({ ...form, paciente: e.target.value })} placeholder="Maria Silva" /></Field></div>
               <div style={{ flex: "1 1 180px" }}><Field label="Procedimento"><input style={inputStyle} value={form.procedimento} onChange={e => setForm({ ...form, procedimento: e.target.value })} placeholder="Restauração" /></Field></div>
               <div style={{ flex: "1 1 120px" }}><Field label="Valor (R$)"><input type="number" min="0" step="0.01" style={inputStyle} value={form.valor} onChange={e => setForm({ ...form, valor: e.target.value })} /></Field></div>
             </div>
@@ -104,7 +105,7 @@ export default function Lancamentos({ userId, clinicas, lancamentos, onChanged, 
                   <ClinicAvatar nome={c?.nome || "?"} color={idx >= 0 ? clinicColor(idx) : t.textMuted} size={30} />
                   <Badge status={st} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c?.nome || "Removida"} {l.procedimento && `· ${l.procedimento}`}</div>
+                    <div style={{ fontWeight: 600, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c?.nome || "Removida"}{l.paciente && ` · ${l.paciente}`}{l.procedimento && ` · ${l.procedimento}`}</div>
                     <div style={{ fontSize: 12, color: t.textMuted }}>atendido {formatDate(l.data_atendimento)} · previsto {formatDate(l.data_prevista)}{l.pago && ` · pago ${formatDate(l.data_pagamento)}`}</div>
                   </div>
                 </div>
