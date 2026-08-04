@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Pencil, Trash2, Check, X, Building2 } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 import { useTheme } from "../theme.js";
-import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA, DIAS_SEMANA_CURTO, describePagamento, describeAgenda, ClinicAvatar, clinicColor, EmptyState } from "../components/ui.jsx";
+import { Card, PageHeader, Field, Button, useInputStyle, DIAS_SEMANA_CURTO, describePagamento, describeAgenda, ClinicAvatar, clinicColor, EmptyState } from "../components/ui.jsx";
 
 const REGIMES = ["Semanal", "Quinzenal", "Mensal", "Por procedimento", "Outro"];
 
@@ -13,8 +13,8 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  function startNew() { setForm({ id: null, nome: "", regime: REGIMES[0], dia_semana: "5", dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", dias_atendimento: [], contato: "", obs: "" }); }
-  function startEdit(c) { setForm({ dia_semana: "5", dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", dias_atendimento: c.dias_atendimento || [], ...c }); }
+  function startNew() { setForm({ id: null, nome: "", regime: REGIMES[0], dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", dias_atendimento: [], contato: "", obs: "" }); }
+  function startEdit(c) { setForm({ dia_mes_1: "", dia_mes_2: "", prazo_dias: "", dia_pagamento: "", dias_atendimento: c.dias_atendimento || [], ...c }); }
   async function remove(id) {
     if (lancamentos.some(l => l.clinica_id === id) && !window.confirm("Essa clínica tem lançamentos. Remover mesmo assim?")) return;
     const { error: e } = await supabase.from("clinicas").delete().eq("id", id);
@@ -26,7 +26,7 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
     setSaving(true); setError("");
     const payload = {
       nome: form.nome, regime: form.regime, dia_pagamento: form.dia_pagamento || "",
-      dia_semana: form.regime === "Semanal" ? Number(form.dia_semana) : null,
+      dia_semana: form.regime === "Semanal" ? [...(form.dias_atendimento || [])].sort((a, b) => a - b)[0] ?? null : null,
       dia_mes_1: ["Mensal", "Quinzenal"].includes(form.regime) ? Number(form.dia_mes_1) || null : null,
       dia_mes_2: form.regime === "Quinzenal" ? Number(form.dia_mes_2) || null : null,
       prazo_dias: form.regime === "Por procedimento" ? Number(form.prazo_dias) || null : null,
@@ -54,14 +54,13 @@ export default function Clinicas({ userId, clinicas, lancamentos, onChanged, toa
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div style={{ flex: "1 1 200px" }}><Field label="Nome da clínica"><input style={inputStyle} value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} placeholder="Clínica Sorriso" autoFocus /></Field></div>
               <div style={{ flex: "1 1 160px" }}><Field label="Regime"><select style={inputStyle} value={form.regime} onChange={e => setForm({ ...form, regime: e.target.value })}>{REGIMES.map(r => <option key={r}>{r}</option>)}</select></Field></div>
-              {form.regime === "Semanal" && <div style={{ flex: "1 1 160px" }}><Field label="Dia da semana"><select style={inputStyle} value={form.dia_semana} onChange={e => setForm({ ...form, dia_semana: e.target.value })}>{DIAS_SEMANA.map((d, i) => <option key={i} value={i}>{d}</option>)}</select></Field></div>}
               {form.regime === "Mensal" && <div style={{ flex: "1 1 120px" }}><Field label="Dia do mês"><input type="number" min="1" max="31" style={inputStyle} value={form.dia_mes_1} onChange={e => setForm({ ...form, dia_mes_1: e.target.value })} placeholder="5" /></Field></div>}
               {form.regime === "Quinzenal" && <><div style={{ flex: "1 1 100px" }}><Field label="1º dia"><input type="number" min="1" max="31" style={inputStyle} value={form.dia_mes_1} onChange={e => setForm({ ...form, dia_mes_1: e.target.value })} placeholder="5" /></Field></div><div style={{ flex: "1 1 100px" }}><Field label="2º dia"><input type="number" min="1" max="31" style={inputStyle} value={form.dia_mes_2} onChange={e => setForm({ ...form, dia_mes_2: e.target.value })} placeholder="20" /></Field></div></>}
               {form.regime === "Por procedimento" && <div style={{ flex: "1 1 160px" }}><Field label="Dias após atendimento"><input type="number" min="0" style={inputStyle} value={form.prazo_dias} onChange={e => setForm({ ...form, prazo_dias: e.target.value })} placeholder="7" /></Field></div>}
               {form.regime === "Outro" && <div style={{ flex: "1 1 160px" }}><Field label="Dia(s) de pagamento"><input style={inputStyle} value={form.dia_pagamento} onChange={e => setForm({ ...form, dia_pagamento: e.target.value })} /></Field></div>}
             </div>
             <div>
-              <Field label="Dias da semana que atende nessa clínica" hint="Isso monta sua agenda automaticamente">
+              <Field label="Dias da semana que atende nessa clínica" hint={form.regime === "Semanal" ? "Monta sua agenda e define o dia de pagamento (o primeiro dia marcado)" : "Isso monta sua agenda automaticamente"}>
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                   {DIAS_SEMANA_CURTO.map((d, i) => {
                     const active = (form.dias_atendimento || []).includes(i);
