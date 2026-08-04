@@ -110,14 +110,15 @@ export default function App() {
         html, body { margin:0; font-family: 'Plus Jakarta Sans', 'IBM Plex Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
         input:focus, select:focus, textarea:focus { border-color: ${t.primary} !important; box-shadow: 0 0 0 3px ${t.primary}22 !important; }
         button { font-family: inherit; }
-        .op-sidebar { width: 240px; background: ${t.sidebar}; border-right: 1px solid ${t.sidebarBorder}; padding: 20px 12px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+        .op-sidebar { width: 240px; background: ${t.sidebar}; border-right: 1px solid ${t.sidebarBorder}; padding: 20px 12px; padding-bottom: max(20px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
         .op-main { flex: 1; padding: 24px 32px; min-width: 0; max-width: 1100px; }
         @media (max-width: 768px) {
-          .op-sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; width: 260px; transform: translateX(-100%); transition: transform .2s ease; }
+          .op-sidebar { position: fixed; top: 0; left: 0; bottom: 0; height: auto; z-index: 50; width: 260px; transform: translateX(-100%); transition: transform .2s ease; }
           .op-sidebar.open { transform: translateX(0); }
           .op-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 49; }
           .op-overlay.open { display: block; }
           .op-mobile-bar { display: flex; }
+          .op-mobile-close { display: flex !important; }
           .op-main { padding: 16px; }
         }
         @media (min-width: 769px) {
@@ -150,7 +151,7 @@ export default function App() {
                 <div style={{ fontSize: 12, color: t.sidebarTextDim }}>{profile?.nickname || "..."}</div>
               </div>
             </div>
-            <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: t.sidebarText, display: "none" }} className="op-mobile-bar"><X size={20} /></button>
+            <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: t.sidebarText, display: "none" }} className="op-mobile-close"><X size={20} /></button>
           </div>
 
           <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
